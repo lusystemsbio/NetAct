@@ -1,0 +1,14 @@
+Package: NetAct
+Type: Package
+Title: Construction of Gene Regulatory Networks using TFs’ Activity
+Version: 0.2.0
+Author: Kenong Su, Mingyang Lv
+Maintainer: The package maintainer <kenongsu@gmail.com>
+Description: This is my summer project at Jackson Lab.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: yes
+Packaged: 2018-07-10 21:09:55 UTC; kenongsu
+LinkingTo: Rcpp
+Imports: Rcpp
