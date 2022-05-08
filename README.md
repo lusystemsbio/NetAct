@@ -15,3 +15,10 @@ Danya Gordin <Danya.Gordin@gmail.com> (Main maintainer),
 Mingyang Lu <mingyang.lu@northeastern.edu>
 
 from the Lu lab @ Northeastern University <https://lusystemsbio.northeastern.edu/>.
+
+### Installation:
+
+```
+library(devtools)
+install_github("lusystemsbio/NetAct", dependencies=T, build_vignettes = T)
+```
