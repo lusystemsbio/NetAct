@@ -14,6 +14,8 @@ import(Rcpp)
 import(visNetwork)
 import(entropy)
 import(reshape2)
+import(Mus.musculus)
+import(Homo.sapiens)
 
 export(
     preprocess_counts,
