@@ -11,5 +11,4 @@ LazyData: true
 NeedsCompilation: yes
 Packaged: 2022-05-08 16:14:44 UTC; lusystemsbio
 LinkingTo: Rcpp
-Imports: Rcpp, pheatmap, qvalue,fgsea, mclust, Hmisc, entropy, igraph, gplots, visNetwork, limma
-
+Imports: Rcpp, pheatmap, qvalue,fgsea, mclust, Hmisc, entropy, igraph, gplots, visNetwork, limma, Mus.musculus, Homo.sapiens
