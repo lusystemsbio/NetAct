@@ -16,6 +16,8 @@ import(entropy)
 import(reshape2)
 import(Mus.musculus)
 import(Homo.sapiens)
+import(ComplexHeatmap)
+import(circlize)
 
 export(
     preprocess_counts,
