@@ -1,0 +1,42 @@
+importFrom(Hmisc,rcorr)
+import(Biobase)
+import(pheatmap)
+import(qvalue)
+import(igraph)
+import(fgsea)
+import(qvalue)
+import(gplots)
+import(mclust)
+import(fastmatch)
+import(limma)
+import(BiocParallel)
+import(Rcpp)
+import(visNetwork)
+import(entropy)
+import(reshape2)
+
+export(
+    preprocess_counts,
+    MicroDegs,
+    RNAseqDegs_limma,
+    RNAseqDegs_DESeq,
+    GSEA_permute,
+    TF_Activity,
+    allNet,
+    TF_Filter,
+    GSEA,
+    GSEA_new,
+    TF_GSEA,
+    TF_Selection,
+    Reselect_TFs,
+    cal_activity,
+    rem_data,
+    row_norm,
+    Hill,
+    Down_Streams,
+    Activity_heatmap,
+    toCPM,
+    plot_network
+)
+
+useDynLib(NetAct)
