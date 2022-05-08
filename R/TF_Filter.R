@@ -71,8 +71,8 @@ calculateMI <- function(actMat = actMat, nbins=16){
 TF_Filter = function(actMat, GSDB, miTh = 0.4, maxTf = 75, 
                      maxInteractions = 300,  
                      nbins = 16, corMethod = "spearman", useCor = FALSE, 
-                     removeSignalling = FALSE, DPI = FALSE, ...){
-
+                     removeSignalling = FALSE, DPI = FALSE, nameFile = NULL, ...){
+  
   corMat = cor(t(actMat), method = corMethod)
   if(useCor){
     miMat <- abs(corMat)
@@ -81,51 +81,58 @@ TF_Filter = function(actMat, GSDB, miTh = 0.4, maxTf = 75,
   else{
     miMat <- calculateMI(actMat, nbins)
   }
-
-    actLinks = reshape2::melt(miMat)
-    actLinks <- actLinks[order(actLinks$value,decreasing = TRUE),]
-    actLinks <- actLinks[actLinks$value > miTh,]
-    actLinks <- data.frame(actLinks, stringsAsFactors = FALSE)
-    tf <- 0
-    link <- 0
-    
-    tfLinks <- as.data.frame(matrix(NA, ncol = 2,nrow = maxInteractions))
-    names(tfLinks) <- c("Source", "Target")
-    DBtf <- names(GSDB)
-    counter <- 1
-    while((link <= maxInteractions) && (tf <= maxTf) && 
-          counter <= dim(actLinks)[1]){
-      if(actLinks[counter,2] %in% GSDB[[which(DBtf == actLinks[counter,1])]]){
-        link=link+1
-        tfLinks[link, 1] <- as.character(actLinks[counter,1])
-        tfLinks[link, 2] <- as.character(actLinks[counter,2])
-        tf = length(union(tfLinks$Source,tfLinks$Target))
-    
-        }
-      counter=counter+1
+  
+  actLinks = reshape2::melt(miMat)
+  actLinks <- actLinks[order(actLinks$value,decreasing = TRUE),]
+  actLinks <- actLinks[actLinks$value > miTh,]
+  actLinks <- data.frame(actLinks, stringsAsFactors = FALSE)
+  tf <- 0
+  link <- 0
+  
+  tfLinks <- as.data.frame(matrix(NA, ncol = 2,nrow = maxInteractions))
+  names(tfLinks) <- c("Source", "Target")
+  DBtf <- names(GSDB)
+  counter <- 1
+  while((link <= maxInteractions) && (tf <= maxTf) && 
+        counter <= dim(actLinks)[1]){
+    if(actLinks[counter,2] %in% GSDB[[which(DBtf == actLinks[counter,1])]]){
+      link=link+1
+      tfLinks[link, 1] <- as.character(actLinks[counter,1])
+      tfLinks[link, 2] <- as.character(actLinks[counter,2])
+      tf = length(union(tfLinks$Source,tfLinks$Target))
       
     }
-    if(removeSignalling) {
-      tfLinks <- tfLinks[tfLinks[,1] %in% tfLinks[,2],]
-    }
-    tfLinks <- tfLinks[complete.cases(tfLinks),]
-    corLinks = reshape2::melt(corMat)
+    counter=counter+1
     
-    tfLinks$Interaction = NULL
+  }
+  if(removeSignalling) {
+    tfLinks <- tfLinks[tfLinks[,1] %in% tfLinks[,2],]
+  }
+  tfLinks <- tfLinks[complete.cases(tfLinks),]
+  corLinks = reshape2::melt(corMat)
+  
+  tfLinks$Interaction = NULL
+  
+  # determine the directions
+  for (i in 1:nrow(tfLinks)){
+    tfLinks$Interaction[i] <- ifelse(corMat[tfLinks[i,1], 
+                                            tfLinks[i,2]] > 0, 1, 2)
+  }
+  rownames(tfLinks) = NULL
+  
+  if(DPI){
+    tfLinks <- applyDPI(tfLinks, miMat,...)
+  }
+  
+  if (!is.null(nameFile)) {
     
-    # determine the directions
-    for (i in 1:nrow(tfLinks)){
-        tfLinks$Interaction[i] <- ifelse(corMat[tfLinks[i,1], 
-                                                 tfLinks[i,2]] > 0, 1, 2)
-    }
-    rownames(tfLinks) = NULL
+    write.csv(tfLinks, file = paste0(nameFile, ".csv" ))
+    saveRDS(tfLinks, file = paste0(nameFile, ".tpo" ))
     
-    if(DPI){
-      tfLinks <- applyDPI(tfLinks, miMat,...)
-    }
-    
-    return(tfLinks)
-
+  }
+  
+  return(tfLinks)
+  
 }
 
 #' @export
