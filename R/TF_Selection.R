@@ -219,7 +219,7 @@ TF_Selection = function(GSDB, DErslt, minSize=5, nperm = 5000, specific = NULL, 
 }
 
 ####Reselect_TFs####
-Reselect_TFs = function(GSEArslt, qval = 0.05, ntop = NULL) {
+Reselect_TFs = function(GSEArslt, qval = 0.05, combine_TFs = TRUE, ntop = NULL) {
   
   if (length(GSEArslt) == 1) {
     
@@ -243,7 +243,8 @@ Reselect_TFs = function(GSEArslt, qval = 0.05, ntop = NULL) {
       qval <- rep(qval, length(GSEArslt))
     }
     
-    tfs = character()
+    tfs = vector(mode = "list", length = length(GSEArslt))
+    
     for (i in 1:length(GSEArslt)) {
       
       tfs_tmp <- as.character(GSEArslt[[i]]$tf[GSEArslt[[i]]$qvals < qval[i]])
@@ -254,10 +255,18 @@ Reselect_TFs = function(GSEArslt, qval = 0.05, ntop = NULL) {
         }
       }
       
-      tfs = c(tfs, tfs_tmp)
+      tfs[[i]] = sort(tfs_tmp)
       
     }
-    tfs = sort(unique(tfs))
+    
+    if (combine_TFs) {
+      
+      tfs = sort(unique(unlist(tfs)))
+      
+    } else {
+      
+      names(tfs) <- names(GSEArslt)
+    }
   }
   
   return(tfs)

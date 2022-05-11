@@ -42,32 +42,65 @@ preprocess_counts <- function(counts, groups, mouse = TRUE) {
   return(x$counts)
 }
 
-
-##MicroDegs
-MicroDegs = function(eset, compList, qval = 0.05){
-  # compList includes the comparison names e.g. compList = c("Early-Middle", "Middle-Late", "Early-Late")
+#Helper Function For DEG Analysis of MicroArray Data
+DEG_Analysis_Micro <- function(eset, qval = 0.05) {
   data = exprs(eset)
   phenodata = pData(eset)
-  celltype = factor(phenodata$celltype)
-  levs = levels(celltype)
+  celltype = phenodata$celltype
+  
+  if (is.null(phenodata$batch)){
+    fit = lmFit(data, model.matrix(~ celltype))
+  }else{
+    batch = phenodata$batch
+    fit = lmFit(data, model.matrix(~ batch + celltype))
+  }
+  efit = eBayes(fit)
+  rslt = topTable(efit, coef=2, number = Inf, sort.by = "P")
+  rslt$padj = rslt$adj.P.Val
+  rank_vector = abs(rslt$t)
+  names(rank_vector) = rownames(rslt)
+  degs = rownames(rslt[rslt$padj < qval, ])
+  return(list(table = rslt, rank_vector = rank_vector, degs = degs))
+}
+
+##MicroDegs
+MicroDegs = function(eset, compList, qval = 0.05) {
+
+  data = exprs(eset)
+  phenodata = pData(eset)
+  celltype = as.character(phenodata$celltype)
   
   if (missing(compList)) {
     
-    if (is.null(phenodata$batch)){
-      fit = lmFit(data, model.matrix(~ celltype))
-    }else{
-      batch = phenodata$batch
-      fit = lmFit(data, model.matrix(~ batch + celltype))
-    }
-    efit = eBayes(fit)
-    rslt = topTable(efit, coef=2, number = Inf, sort.by = "P")
-    rslt$padj = rslt$adj.P.Val
-    rank_vector = abs(rslt$t); names(rank_vector) = rownames(rslt)
-    degs = rownames(rslt[rslt$padj < qval, ])
-    return(list(table = rslt, rank_vector = rank_vector, degs = degs))
+    return(DEG_Analysis_Micro(eset = eset, qval = qval))
     
   } else {
     
+    DEresult = vector(mode = "list", length = length(compList) + 1)
+    names(DEresult) = c(compList, "Overall")
+    
+    for (comp in compList) {
+      
+      cs = strsplit(comp, split = "-")[[1]]
+      ids = which(celltype %in% cs)
+      tmpdata = data[, ids]
+      
+      if (is.null(phenodata$batch)){
+        tmppdata = new("AnnotatedDataFrame", data = data.frame(celltype = celltype[ids]))
+      }else{
+        tmppdata = new("AnnotatedDataFrame", data = data.frame(celltype = celltype[ids], batch = batch[ids]))
+      }
+      
+      rownames(tmppdata) = colnames(tmpdata)
+      tmpeset = ExpressionSet(assayData = tmpdata, phenoData = tmppdata)
+      tmpDErslt = DEG_Analysis_Micro(tmpeset, qval)
+      DEresult[[comp]] = tmpDErslt
+      
+    }
+    
+    celltype = factor(phenodata$celltype)
+    levs = levels(celltype)
+
     if (is.null(phenodata$batch)){
       design = model.matrix(~ 0 + celltype)
       colnames(design) = levs
@@ -85,7 +118,8 @@ MicroDegs = function(eset, compList, qval = 0.05){
     rank_vector = DEtable$F; names(rank_vector) = rownames(DEtable)
     DEtable$padj = DEtable$adj.P.Val
     degs = rownames(DEtable[DEtable$padj < qval, ])
-    return(list(table = DEtable, rank_vector = rank_vector, degs = degs))
+    DEresult$Overall = list(table = DEtable, rank_vector = rank_vector, degs = degs)
+    return(DEresult)
     
   }
 }
