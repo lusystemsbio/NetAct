@@ -233,7 +233,7 @@ Reselect_TFs = function(GSEArslt, qval = 0.05, ntop = NULL) {
     
   } else {
     
-    if ((length(qval) != 1) & (length(qval) != length(compList)))  {
+    if ((length(qval) != 1) & (length(qval) != length(GSEArslt)))  {
       
       stop("qvalue length must be equal to 1 OR the number of comparisons")
     }
