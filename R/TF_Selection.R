@@ -240,7 +240,7 @@ Reselect_TFs = function(GSEArslt, qval = 0.05, ntop = NULL) {
     
     if (length(qval) == 1) {
       
-      qval <- rep(qval, length(compList))
+      qval <- rep(qval, length(GSEArslt))
     }
     
     tfs = character()
