@@ -2,7 +2,7 @@
 title: "NetAct Tutorial"
 author: "Danya Gordin"
 date: '2022-05-08'
-output: rmarkdown::html_vignette
+output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{NetAct Tutorial}
   %\VignetteEngine{knitr::rmarkdown}
@@ -16,8 +16,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width =
 ## Introduction
 
 NetAct is a computational platform that uses both transcriptomic data and literature-based transcription factor-target databases to construct core transcription-factor regulatory networks. This tutorial aims to demonstrate the core functional components of NetAct and how one uses it to construct and model a transcription-factor regulatory network. The experimental RNA-seq data utilized in this workflow is from Sheridan et al. (2015) and consists of three cell populations (basal, luminal progenitor (LP) and mature luminal (ML)) sorted from the mammary glands of female virgin mice. Using the GEO Series accession number [GSE63310](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE63310), count data for these samples can be downloaded from the Gene Expression Omnibus (GEO) http://www.ncbi.nlm.nih.gov/geo/. 
-
-------------
 
 ## Load libraries and data
 
@@ -50,8 +48,6 @@ samplenames <- c("LP1", "ML1", "Basal1", "Basal2", "ML2", "LP2", "Basal3", "ML3"
 colnames(x) <- samplenames
 ```
 
-------------
-
 ## Set up comparisons and phenodata
 
 Before proceeding, it is important to define all the group comparisons you are interested in as well as an R dataframe that contains all the relevant phenotype metadata including the group names. 
@@ -61,8 +57,6 @@ compList <- c("Basal-LP", "Basal-ML", "LP-ML")
 phenoData = new("AnnotatedDataFrame", data = data.frame(celltype = group))
 rownames(phenoData) = colnames(x$counts)
 ```
-
-------------
 
 ## Preprocess and DEG analysis
 
@@ -74,8 +68,6 @@ DErslt = RNAseqDegs_limma(counts = counts, phenodata = phenoData,
                           complist = compList, qval = 0.05)
 neweset = ExpressionSet(assayData = as.matrix(DErslt$Overall$e), phenoData = phenoData)
 ```
-
-------------
 
 ## Identify significantly enriched TFs
 
@@ -103,8 +95,6 @@ In the cases where comparison specific TFs are needed or when comparisons requir
 Reselect_TFs(GSEArslt = gsearslts$GSEArslt, qval = 0.01)
 ```
 
-------------
-
 ## Calculate the activities of the selected TFs
 
 NetAct infers the activities of the selected regulators based on the expression of their targets. The results show clearer TF activity patterns than those from heir gene expression.
@@ -114,8 +104,6 @@ act.me <- TF_Activity(tfs, mDB, neweset, DErslt$Overall)
 acts_mat = act.me$all_activities
 Activity_heatmap(acts_mat, neweset)
 ```
-
-------------
 
 ## Construct gene regualtory network
 
@@ -127,12 +115,20 @@ tf_links = TF_Filter(acts_mat, mDB, miTh = .05, nbins = 8, corMethod = "spearman
 ```
 <center> ![](tutorial_network.png){width=60%} </center>
 
-------------
-
 ## RACIPE simulations
 
 We then use the algorithm RACIPE to model the dynamical behavior of the network we constructed. It is recommended to simulate 10,000 models.  
 
 ```{r }
 racipe_results <- sracipeSimulate(circuit = tf_links, numModels = 200, plots = TRUE)
+```
+
+# References
+
+Su K, et al (2022) NetAct: a computational platform to construct core transcription factor regulatory networks using gene activity, bioRxiv 2022.05.06.487898; doi: https://doi.org/10.1101/2022.05.06.487898
+
+# Session Information
+
+```{r}
+sessionInfo()
 ```
