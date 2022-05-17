@@ -11,4 +11,4 @@ LazyData: true
 VignetteBuilder: knitr
 NeedsCompilation: yes
 LinkingTo: Rcpp
-Imports: Rcpp, pheatmap, qvalue,fgsea, mclust, Hmisc, entropy, igraph, gplots, visNetwork, limma, Mus.musculus, Homo.sapiens, ComplexHeatmap
+Imports: Rcpp, pheatmap, qvalue,fgsea, mclust, Hmisc, entropy, circlize, igraph, gplots, visNetwork, limma, Mus.musculus, Homo.sapiens, ComplexHeatmap
