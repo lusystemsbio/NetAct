@@ -8,7 +8,7 @@ Description: NetAct R package for gene network construction and modeling
 License: MIT License
 Encoding: UTF-8
 LazyData: true
+VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2022-05-10; lusystemsbio
 LinkingTo: Rcpp
 Imports: Rcpp, pheatmap, qvalue,fgsea, mclust, Hmisc, entropy, igraph, gplots, visNetwork, limma, Mus.musculus, Homo.sapiens, ComplexHeatmap
