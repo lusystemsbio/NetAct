@@ -155,7 +155,6 @@ Down_Streams_nofiltering = function(gs_str, gs_db, eset, cellwidth = 4, cellheig
 ###Activity Heatmap###
 Activity_heatmap = function(new_activity, eset){
     require(ComplexHeatmap)
-    require(circlize)
     if (is(eset, "ExpressionSet")){
         data = exprs(eset)
     }else{data = eset}
