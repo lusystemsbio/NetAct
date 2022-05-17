@@ -10,7 +10,7 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 8, fig.align = "center")
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 6, fig.align = "center")
 ```
 
 ## Introduction
@@ -19,7 +19,7 @@ NetAct is a computational platform that uses both transcriptomic data and litera
 
 ------------
 
-## Load Libraries and Data
+## Load libraries and data
 
 The analysis begins by downloading text files that contain raw gene-level counts for each sample. The file GSE63310_RAW.tar is available online at http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63310&format=file. 
 
@@ -52,7 +52,7 @@ colnames(x) <- samplenames
 
 ------------
 
-## Set Up Comparisons and Phenodata
+## Set up comparisons and phenodata
 
 Before proceeding, it is important to define all the group comparisons you are interested in as well as an R dataframe that contains all the relevant phenotype metadata including the group names. 
 
@@ -64,7 +64,7 @@ rownames(phenoData) = colnames(x$counts)
 
 ------------
 
-## Preprocess and DEG Analysis
+## Preprocess and DEG analysis
 
 Fro RNA-seq data, NetAct provides a useful pre-processing function called ```preprocess_counts()``` that filters out lowly expressed genes and retrieves associated gene symbols for raw count data. Differentially expressed genes (DEGs) are then identified using the limma package. The resultant normalized expression data is saved alongside the *phenoData* metadata into the standard ```ExpressionSet``` object for downstream analysis. 
 
@@ -77,7 +77,7 @@ neweset = ExpressionSet(assayData = as.matrix(DErslt$Overall$e), phenoData = phe
 
 ------------
 
-## Identify Significantly Enriched TFs
+## Identify significantly enriched TFs
 
 We adopt a permutation approach to select the significantly enriched TFs by using the GSEA algorithm. The TFs are aggregated from the multiple comparisons by considering the q-value cutoff. This step usually takes the longest and thus we recommend saving the output by providing a file name. The results from this step in the tutorial can be retried from the  *vignettes* folder on our GitHub.
 
@@ -117,7 +117,7 @@ Activity_heatmap(acts_mat, neweset)
 
 ------------
 
-## Generate and Filter Network
+## Construct gene regualtory network
 
 In this step we output the gene regulatory network topology by filtering the link relations based on mutual information and entropy. The ```plot_network()``` function provides an interactive view of the network topology. The image of the network "tutorial_network.png" is provided in the *vignettes* folder. 
 
@@ -129,7 +129,7 @@ tf_links = TF_Filter(acts_mat, mDB, miTh = .05, nbins = 8, corMethod = "spearman
 
 ------------
 
-## RACIPE Simulations
+## RACIPE simulations
 
 We then use the algorithm RACIPE to model the dynamical behavior of the network we constructed. It is recommended to simulate 10,000 models.  
 
