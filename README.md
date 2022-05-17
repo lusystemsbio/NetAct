@@ -22,3 +22,7 @@ from the Lu lab @ Northeastern University <https://lusystemsbio.northeastern.edu
 library(devtools)
 install_github("lusystemsbio/NetAct", dependencies=T, build_vignettes = T)
 ```
+
+### Tutorial:
+
+https://htmlpreview.github.io/?https://github.com/lusystemsbio/NetAct/blob/master/vignettes/Tutorial.html
