@@ -223,7 +223,7 @@ Reselect_TFs = function(GSEArslt, qval = 0.05, combine_TFs = TRUE, ntop = NULL) 
   
   if (length(GSEArslt) == 1) {
     
-    tfs <- as.character(GSEArslt$tf[GSEArslt$qvals < qval[1]])
+    tfs <- as.character(GSEArslt[[1]]$tf[which(GSEArslt[[1]]$qvals < qval[1])])
     if(!is.null(ntop)){
       if(length(tfs) > ntop){
         tfs = tfs[1:ntop]

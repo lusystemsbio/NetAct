@@ -70,7 +70,7 @@ MicroDegs = function(eset, compList, qval = 0.05) {
   phenodata = pData(eset)
   celltype = as.character(phenodata$celltype)
   
-  if (missing(compList)) {
+  if (missing(compList) || (length(compList) == 1)) {
     
     return(DEG_Analysis_Micro(eset = eset, qval = qval))
     

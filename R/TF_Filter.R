@@ -52,21 +52,19 @@ calculateMI <- function(actMat = actMat, nbins=16){
 #' the actual number will be less. 
 #' @param maxInteractions integer (optional) Default 300. Maximum number of
 #' interactions in the network.
-#' @param miTh numeric. Mutual information threhold 
+#' @param miTh numeric. Mutual information threshold 
 #' @param nbins integer (optional) Number of bins Default 16.
-#' @param corMethod character (optional) Method to compute correlaiton. See 
-#' \link{\code[stats]{cor}}.
+#' @param corMethod character (optional) Method to compute correlation.
 #' @param useCor Logical (optional) Whether to use correlation instead of
-#' mutual information to find possible interactions. Default \code{FALSE}.
+#' mutual information to find possible interactions. 
 #' @param removeSignalling logical (optional). Whether to remove the Tfs which
 #' are not the target of any other Tfs. Default TRUE. It is not recursive and 
-#' the generated network might still contain some signallings tfs.
+#' the generated network might still contain some signalling tfs.
 #' @param DPI logical (optional) Default TRUE. 
 #' Whether to apply the data processing
 #' inequality to remove weak edges from triangles. 
 #' @return data.frame Contains the interactions in a dataframe listing 
 #' source tf, target tf and interaction type (1-activation, 2-inhibition).  
-#' 
 #' 
 TF_Filter = function(actMat, GSDB, miTh = 0.4, maxTf = 75, 
                      maxInteractions = 300,  

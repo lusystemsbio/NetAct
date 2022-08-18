@@ -1,7 +1,7 @@
 Package: NetAct
 Type: Package
 Title: NetAct -- a computational platform to construct core transcription factor regulatory networks using gene activity
-Version: 1.0.1
+Version: 1.0.2
 Author: Kenong Su, Vivek Kohar, Danya Gordin, Mingyang Lu
 Maintainer: Danya Gordin <Danya.Gordin@gmail.com>
 Description: NetAct R package for gene network construction and modeling
@@ -12,3 +12,4 @@ VignetteBuilder: knitr
 NeedsCompilation: yes
 LinkingTo: Rcpp
 Imports: Rcpp, pheatmap, qvalue,fgsea, mclust, Hmisc, entropy, circlize, igraph, gplots, visNetwork, limma, Mus.musculus, Homo.sapiens, ComplexHeatmap
+RoxygenNote: 7.1.2
