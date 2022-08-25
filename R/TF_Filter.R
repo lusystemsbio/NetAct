@@ -221,12 +221,20 @@ TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, exp_data, miTh = 0.4
 #  exp_data: the whole data set with all genes 
   genelist=intersect(genes,DEgenes)
   genelist=setdiff(genelist,names(GSDB))
-  GSDB2=list()
-  for (i in 1: length(genelist)){
-    GSDB2[[i]]=c("NULL")
+  
+  if(length(genelist) > 0){
+    GSDB2=list()
+    for (i in 1: length(genelist)){
+      print(i)
+      GSDB2[[i]]=c("NULL")
+    }
+    names(GSDB2)=genelist
+    GSDB.n=append(GSDB,GSDB2)
+  }else{
+    print("No new genes added!")
+    return(list(tf_links=tf_links2, new_links = NULL))
   }
-  names(GSDB2)=genelist
-  GSDB.n=append(GSDB,GSDB2)
+  
   k1=as.matrix(rbind(actMat,exp_data[genelist,]))
   tf_links = TF_Filter(actMat, GSDB, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, corMethod =corMethod, 
                         useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = nameFile,...)
