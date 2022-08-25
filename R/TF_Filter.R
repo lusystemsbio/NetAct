@@ -211,3 +211,29 @@ getAdjacencyMat <- function(tfLinks = tfLinks){
   }
   return(adjMat)
 }
+
+TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, exp_data, miTh = 0.4, maxTf = 75, 
+                       maxInteractions = 300,  
+                       nbins = 16, corMethod = "spearman", useCor = FALSE, 
+                       removeSignalling = FALSE, DPI = FALSE, nameFile = NULL, ...){
+# genes : the genes we want check 
+#  DE genes: diffentially expressed gene list(get from the function "MicroDegs")
+#  exp_data: the whole data set with all genes 
+  genelist=intersect(genes,DEgenes)
+  genelist=setdiff(genelist,names(GSDB))
+  GSDB2=list()
+  for (i in 1: length(genelist)){
+    GSDB2[[i]]=c("NULL")
+  }
+  names(GSDB2)=genelist
+  GSDB.n=append(GSDB,GSDB2)
+  k1=as.matrix(rbind(actMat,exp_data[genelist,]))
+  tf_links = TF_Filter(actMat, GSDB, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, corMethod =corMethod, 
+                        useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = nameFile,...)
+  tf_links2 = TF_Filter(k1, GSDB.n, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, corMethod =corMethod, 
+                        useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = nameFile,...)
+  new=setdiff(tf_links2[,2],tf_links[,2])
+  tf_link_new=tf_links2[tf_links2[,2]%in%new,]
+  return(list(tf_links=tf_links2,new_links=tf_link_new))
+}
+

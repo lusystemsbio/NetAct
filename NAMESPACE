@@ -28,6 +28,7 @@ export(
     TF_Activity,
     allNet,
     TF_Filter,
+    TF_Filter_addgene,
     GSEA,
     GSEA_new,
     TF_GSEA,
