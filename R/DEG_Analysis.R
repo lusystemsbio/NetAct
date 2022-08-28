@@ -2,17 +2,25 @@
 ################### DE gene analysis functions ###################
 ##################################################################
 
-###PreProcess###
-
-preprocess_counts <- function(counts, groups, mouse = TRUE) {
-  
-  require(edgeR)
-  require(Mus.musculus)
-  require(Homo.sapiens)
-  #Create DGEList and Filter
+#' @title RNA-seq data pre processing
+#' @description Netact uses edgeR to load the count data and the group information for experimental conditions, 
+#'              It also coverts gene symbols and remove duplicates.
+#' @param counts: raw count matrix
+#' @param groups: group information for experimental conditions
+#' @param mouse: use mouse genome or not (default: FALSE)
+#' @return x$counts: processed count matrix
+#' @export
+#' @import edgeR
+#' @import Mus.musculus
+#' @import Homo.sapiens
+Preprocess_counts <- function(counts, groups, mouse = FALSE) {
+  #  require(edgeR)
+  #  require(Mus.musculus)
+  #  require(Homo.sapiens)
+  #  Create DGEList and Filter
   x <- DGEList(counts, group = groups)
   
-  #Gene Annotations and Filter Duplicate Symbols
+  #  Gene Annotations and Filter Duplicate Symbols
   geneid <- rownames(counts)
   
   if(grepl("ENS", geneid[1])) {
@@ -34,15 +42,24 @@ preprocess_counts <- function(counts, groups, mouse = TRUE) {
   filter <- unique(filter_na, filter_dup)
   x$counts <- x$counts[-filter, ]
   rownames(x$counts) <- genes$SYMBOL[-filter]
-
+  
   #Filter Low Expression
   keep.exprs <- filterByExpr(x, group=groups)
   x <- x[keep.exprs,, keep.lib.sizes=FALSE]
-
+  
   return(x$counts)
 }
 
-#Helper Function For DEG Analysis of MicroArray Data
+#' @title Helper Function For DEG Analysis of microArray Data (for a single comparison)
+#' @param eset: Processed gene expression data in the ExpressionSet format
+#'              batch & experimental conditions are provided in pData. 
+#' @param qval: q-value cutoff for DEG analysis (default: 0.05)
+#' @return DEG result in the format of a list containing:
+#'         table: table of DEG results
+#'         rank_vector: a vector of t-statistics for every gene
+#'         degs: a vector of gene symbols for DEGs
+#' @import edgeR
+#' @import limma
 DEG_Analysis_Micro <- function(eset, qval = 0.05) {
   data = exprs(eset)
   phenodata = pData(eset)
@@ -63,9 +80,21 @@ DEG_Analysis_Micro <- function(eset, qval = 0.05) {
   return(list(table = rslt, rank_vector = rank_vector, degs = degs))
 }
 
-##MicroDegs
+#' @title Helper Function For DEG Analysis of microArray Data (for all cases, including single and multiple comparisons)
+#' @param eset: Processed gene expression data in the ExpressionSet format
+#'              batch & experimental conditions are provided in pData. 
+#' @param compList: a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
+#' @param qval: q-value cutoff for DEG analysis (default: 0.05)
+#' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison
+#'         Each DEG result is in the format of A list containing:
+#'         table: table of DEG results
+#'         rank_vector: a vector of t-statistics for every gene
+#'         degs: a vector of gene symbols for DEGs
+#' @export
+#' @import edgeR
+#' @import limma
 MicroDegs = function(eset, compList, qval = 0.05) {
-
+  
   data = exprs(eset)
   phenodata = pData(eset)
   celltype = as.character(phenodata$celltype)
@@ -100,7 +129,7 @@ MicroDegs = function(eset, compList, qval = 0.05) {
     
     celltype = factor(phenodata$celltype)
     levs = levels(celltype)
-
+    
     if (is.null(phenodata$batch)){
       design = model.matrix(~ 0 + celltype)
       colnames(design) = levs
@@ -124,10 +153,25 @@ MicroDegs = function(eset, compList, qval = 0.05) {
   }
 }
 
-#####RNAseqDegs_limma#######
+#' @title Helper Function For DEG Analysis of RNA-seq Data using limma + Voom
+#' @param counts: Processed gene expression count data
+#' @param phenodata: pData that provides batch & experimental conditions
+#' @param complist: a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
+#' @param lfc: (optional) log fold change constraints for DEGs
+#' @param qval: q-value cutoff for DEG analysis (default: 0.05)
+#' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison
+#'         Each DEG result is in the format of A list containing:
+#'         table: table of DEG results
+#'         rank_vector: a vector of t-statistics for every gene
+#'         degs: a vector of gene symbols for DEGs
+#'         e: expression data (CPM)
+#'         e_batch: batch corrected expression
+#' @export
+#' @import edgeR
+#' @import limma
 RNAseqDegs_limma = function(counts, phenodata, complist, lfc, qval = 0.05) {
-  require(edgeR)
-  require(limma)
+#  require(edgeR)
+#  require(limma)
   celltype = phenodata$celltype
   levs = levels(celltype)
   dge = DGEList(counts=counts,group=celltype, genes = rownames(counts))
@@ -222,9 +266,21 @@ RNAseqDegs_limma = function(counts, phenodata, complist, lfc, qval = 0.05) {
   }
 }
 
-#####RNAseqDegs_DESeq#######
+#' @title Helper Function For DEG Analysis of RNA-seq Data using DESeq
+#' @param counts: Processed gene expression count data
+#' @param phenodata: pData that provides batch & experimental conditions
+#' @param compList: a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
+#' @param qval: q-value cutoff for DEG analysis (default: 0.05)
+#' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison
+#'         Each DEG result is in the format of A list containing:
+#'         table: table of DEG results
+#'         rank_vector: a vector of t-statistics for every gene
+#'         degs: a vector of gene symbols for DEGs
+#'         e: expression data (CPM)
+#' @export
+#' @import DESeq2
 RNAseqDegs_DESeq = function(counts, phenodata, complist, qval = 0.05) {
-  require(DESeq2)
+#  require(DESeq2)
   celltype = phenodata$celltype
   
   if (missing(complist)) {
@@ -300,5 +356,5 @@ RNAseqDegs_DESeq = function(counts, phenodata, complist, qval = 0.05) {
     return(DEresult)
     
   }
-
+  
 }

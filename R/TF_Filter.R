@@ -2,7 +2,10 @@
 #################################### Filter links Function #################################### 
 ###############################################################################################
 
-## Compile a GSDB to a matrix with 2 columns
+#' Compile a GSDB to a matrix with 2 columns
+#' @param GSDB List of list. Gene set database of interactions
+#' @return matrix. Matrix, each row containing regulators ("from"), targets ("to")
+#' @export
 allNet = function(GSDB){
     allNet = matrix(unlist(GSDB), ncol = 1)
     allNet = cbind(rep(names(GSDB), as.vector(sapply(GSDB, length))), allNet)
@@ -10,13 +13,12 @@ allNet = function(GSDB){
     return(allNet)
 }
 
-#' @export
 #' @title Calculate mutual information
 #' @description Mutual information between all pairs based on entropy package.
 #' @param actMat numeric matrix. 
-#' @param nbins integer (optional) Number of bins Default 16
-#' @return numeric matrix (0-1) Matrix containing mutual information values
-#' 
+#' @param nbins integer (optional). Number of bins Default 16
+#' @import entropy
+#' @return numeric matrix (0-1). Matrix containing mutual information values
 calculateMI <- function(actMat = actMat, nbins=16){
   nGenes <- dim(actMat)[1]
   miMat <- matrix(0,nrow = nGenes,ncol = nGenes)
@@ -37,35 +39,34 @@ calculateMI <- function(actMat = actMat, nbins=16){
   return(miMat)
 }
 
-
 ## Filter the links in the topology; 1 means activation 2 means inhibition
-#' @export
 #' @title Generate network
 #' @description Network calculated using activity and interaction database. Uses
 #' mutual information to find possible interactions and keeps the interactions 
 #' if they are available in the database. Sign of interaction is assigned based
 #' on the correlation between the activities.
 #' @param actMat numeric matrix. Matrix containing the activities
-#' @param GSDB List of list Gene set database of interactions
-#' @param maxTf integer (optional) Default 75. Maximum number of transcription 
+#' @param GSDB List of list. Gene set database of interactions
+#' @param miTh numeric. Mutual information threshold 
+#' @param maxTf integer (optional). Default 75. Maximum number of transcription 
 #' factors in the network. If \code{removeSignalling} is \code{TRUE} 
 #' the actual number will be less. 
-#' @param maxInteractions integer (optional) Default 300. Maximum number of
+#' @param maxInteractions integer (optional). Default 300. Maximum number of
 #' interactions in the network.
-#' @param miTh numeric. Mutual information threshold 
-#' @param nbins integer (optional) Number of bins Default 16.
-#' @param corMethod character (optional) Method to compute correlation.
-#' @param useCor Logical (optional) Whether to use correlation instead of
+#' @param nbins integer (optional). Number of bins Default 16.
+#' @param corMethod character (optional). Method to compute correlation.
+#' @param useCor Logical (optional). Whether to use correlation instead of
 #' mutual information to find possible interactions. 
 #' @param removeSignalling logical (optional). Whether to remove the Tfs which
 #' are not the target of any other Tfs. Default TRUE. It is not recursive and 
 #' the generated network might still contain some signalling tfs.
-#' @param DPI logical (optional) Default TRUE. 
+#' @param DPI logical (optional). Default FALSE. 
 #' Whether to apply the data processing
 #' inequality to remove weak edges from triangles. 
-#' @return data.frame Contains the interactions in a dataframe listing 
+#' @param nameFile character (optional). Ouput file name. Default NULL (no file output). 
+#' @return data.frame. Contains the interactions in a dataframe listing 
 #' source tf, target tf and interaction type (1-activation, 2-inhibition).  
-#' 
+#' @export
 TF_Filter = function(actMat, GSDB, miTh = 0.4, maxTf = 75, 
                      maxInteractions = 300,  
                      nbins = 16, corMethod = "spearman", useCor = FALSE, 
@@ -123,30 +124,24 @@ TF_Filter = function(actMat, GSDB, miTh = 0.4, maxTf = 75,
   }
   
   if (!is.null(nameFile)) {
-    
     write.csv(tfLinks, file = paste0(nameFile, ".csv" ))
     saveRDS(tfLinks, file = paste0(nameFile, ".tpo" ))
-    
   }
-  
   return(tfLinks)
-  
 }
 
-#' @export
 #' @title Apply data processing inequality
 #' @description Remove the interactions from a triangle which have lowest 
 #' interaction score.
-#' @param tfLinks Dataframe containing the interactions as source (character),
+#' @param tfLinks Data.frame. containing the interactions as source (character),
 #'  target (character), type (integer).
-#' @param miMat numeric matrix Interaction scores based on mutual information or 
+#' @param miMat numeric matrix. Interaction scores based on mutual information or 
 #' correlation. 
-#' @param miDiff numeric (0-1) Default 0.0 (optional) Minimum difference 
-#' between mutual informations of a traingle for the edge to be removed.
-#' @param minMiTh numeric (0-1) Default 0.5. Minimum value of MI for an interaction 
+#' @param miDiff numeric (0-1). Default 0.0 (optional) Minimum difference 
+#' between mutual information of a traingle for the edge to be removed.
+#' @param minMiTh numeric (0-1). Default 0.5. Minimum value of MI for an interaction 
 #' which will not be removed. 
-#' @return data.frame containing the filtered interactions.
-#'   
+#' @return data.frame. containing the filtered interactions.
 applyDPI <- function(tfLinks = tfLinks, miMat = miMat, miDiff = 0, minMiTh = 0.5){
   print(miDiff)
   print(minMiTh)
@@ -200,6 +195,9 @@ applyDPI <- function(tfLinks = tfLinks, miMat = miMat, miDiff = 0, minMiTh = 0.5
   return(tfLinks)
 }
 
+#' Obtain the adjacency matrix from a matrix of tf-target relationships
+#' @param tfLinks matrix. Matrix of tf-target relationships
+#' @return adjMat, matrix. adjacency matrix
 getAdjacencyMat <- function(tfLinks = tfLinks){
   networkGenes <-  unique(c(tfLinks[,1],tfLinks[,2]))
   nGenes <- length(networkGenes)
@@ -212,10 +210,41 @@ getAdjacencyMat <- function(tfLinks = tfLinks){
   return(adjMat)
 }
 
+#' Generate network (an extension of TF_Filter)
+#' @description Network calculated using activity and interaction database. Uses
+#' mutual information to find possible interactions and keeps the interactions 
+#' if they are available in the database. Sign of interaction is assigned based
+#' on the correlation between the activities. An extension of TF_Filter. 
+#' Add a list of genes of interest.
+#' @param actMat numeric matrix. Matrix containing the activities
+#' @param GSDB List of list. Gene set database of interactions
+#' @param genes vector. a vector of gene symbols of genes of interest
+#' @param DEgenes vector. a vector of gene symbols of DE genes 
+#' @param miTh numeric. Mutual information threshold 
+#' @param maxTf integer (optional). Default 75. Maximum number of transcription 
+#' factors in the network. If \code{removeSignalling} is \code{TRUE} 
+#' the actual number will be less. 
+#' @param maxInteractions integer (optional). Default 300. Maximum number of
+#' interactions in the network.
+#' @param nbins integer (optional). Number of bins Default 16.
+#' @param corMethod character (optional). Method to compute correlation.
+#' @param useCor Logical (optional). Whether to use correlation instead of
+#' mutual information to find possible interactions. Default FALSE 
+#' @param removeSignalling logical (optional). Whether to remove the Tfs which
+#' are not the target of any other Tfs. Default FALSE. It is not recursive and 
+#' the generated network might still contain some signalling tfs.
+#' @param DPI logical (optional). Default FALSE. 
+#' Whether to apply the data processing
+#' inequality to remove weak edges from triangles. 
+#' @return List of data.frame. Contains the interactions in a data frame listing 
+#' source tf, target tf and interaction type (1-activation, 2-inhibition).  
+#'        tf_links: network interactions
+#'        new_links: new interactions associated with the genes of interest
+#' @export
 TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, exp_data, miTh = 0.4, maxTf = 75, 
                        maxInteractions = 300,  
                        nbins = 16, corMethod = "spearman", useCor = FALSE, 
-                       removeSignalling = FALSE, DPI = FALSE, nameFile = NULL, ...){
+                       removeSignalling = FALSE, DPI = FALSE, ...){
 # genes : the genes we want check 
 #  DE genes: diffentially expressed gene list(get from the function "MicroDegs")
 #  exp_data: the whole data set with all genes 
@@ -225,7 +254,6 @@ TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, exp_data, miTh = 0.4
   if(length(genelist) > 0){
     GSDB2=list()
     for (i in 1: length(genelist)){
-      print(i)
       GSDB2[[i]]=c("NULL")
     }
     names(GSDB2)=genelist
@@ -237,11 +265,10 @@ TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, exp_data, miTh = 0.4
   
   k1=as.matrix(rbind(actMat,exp_data[genelist,]))
   tf_links = TF_Filter(actMat, GSDB, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, corMethod =corMethod, 
-                        useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = nameFile,...)
+                        useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = NULL,...)
   tf_links2 = TF_Filter(k1, GSDB.n, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, corMethod =corMethod, 
-                        useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = nameFile,...)
+                        useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = NULL,...)
   new=setdiff(tf_links2[,2],tf_links[,2])
   tf_link_new=tf_links2[tf_links2[,2]%in%new,]
   return(list(tf_links=tf_links2,new_links=tf_link_new))
 }
-

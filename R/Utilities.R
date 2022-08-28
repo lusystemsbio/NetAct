@@ -2,40 +2,9 @@
 ################ Utlities Functions ################
 ####################################################
 
-#1. Activities Calculation
-cal_activity = function (gs_remain, tmp_data, tmp_sign, ind, with_weight, DE_weights, tf_exprs, useCorSign = useCorSign) {
-    if(length(gs_remain) == 1) {
-        tmp_activity = as.vector(scale(tmp_data[gs_remain,]))  # by default it's a matrix
-        tmp_sign = tmp_sign[gs_remain, ,drop = FALSE ]
-    } else{
-        tmp_rem_data = row_norm(tmp_data[gs_remain, ])
-        tmp_sign = tmp_sign[gs_remain, , drop = FALSE]
-        if(with_weight) {
-            tmp_weight = Hill(DE_weights[gs_remain, ], ind)
-        } else {
-            tmp_weight = rep(1.0, length(gs_remain))
-        }
-        tmp_activity = apply(tmp_rem_data, 2, function(x){
-            rlst = x * tmp_sign * tmp_weight
-            return(sum(rlst)/sum(tmp_weight))})
-        tmp_activity = as.numeric(tmp_activity)
-    }
-  if(useCorSign){
-    if (cor(tmp_activity, tf_exprs, method="spearman") < 0){
-        tmp_activity = -tmp_activity
-        tmp_sign = -tmp_sign
-      # dimnames(tmp_sign) = gs_remain
-    }
-  }
-    else{
-        tmp_activity = tmp_activity
-        tmp_sign = tmp_sign
-      # dimnames(tmp_sign) = gs_remain
-    }
-    return(list(activity = tmp_activity, sign = tmp_sign))
-}
-
-#2. remove Non-informative genes
+#' Remove Non-informative genes
+#' @param x: gene expression matrix
+#' @return x: gene expression matrix without containing non-informative genes
 rem_data = function(x){
     rem_ids = which(apply(x, 1, sd) == 0)
     if (length(rem_ids) > 0){
@@ -46,7 +15,9 @@ rem_data = function(x){
     }
 }
 
-#3. Row normalization
+#' Row normalization (standardization)
+#' @param data: gene expression matrix
+#' @return norm_data: standardized gene expression matrix
 row_norm = function(data){
     row_mean = apply(data, 1, mean)
     row_sd = apply(data, 1, sd)
@@ -54,21 +25,36 @@ row_norm = function(data){
     return(norm_data)
 }
 
-#4. Hill function for the gene weight
+#' Hill function for the gene weight
+#' @param x: value (adj p-value)
+#' @param ind: Hill coefficient
+#' @return Hill function of x
 Hill = function(x, ind){
     return(1/ (1 + (x/0.05) ^(ind)))
 }
 
-
-#5. Downstream Grouping Results
+#' Downstream Grouping Results
+#' @param gs_str: Vector. A list of gene set names (TFs)
+#' @param gs_db: List of list. Gene set data base
+#' @param eset: ExpressionSet of gene expression data
+#' @param cellwidth: plot width (default 4)
+#' @param cellheight:  plot height (default 4)
+#' @param showname: show colnames and rownames (default TRUE)
+#' @param use_module: use modularity of gene grouping (default TRUE)
+#' @return List: gene grouping scheme
+#' @import pheatmap
+#' @import Biobase
+#' @export
 Down_Streams = function(gs_str, gs_db, eset, cellwidth = 4, cellheight = 4, showname = T, use_module=T){
-    require(pheatmap)
-    require(Biobase)
-    require(Hmisc)
+#    require(pheatmap)
+#    require(Biobase)
+#    require(Hmisc)
     data = exprs(eset)
     g_inds = which(gs_db[[gs_str]] %in% rownames(data))
     tmp_data = data[gs_db[[gs_str]][g_inds], ]; rownames(tmp_data) = gs_db[[gs_str]][g_inds]
-    cor_mat = rcorr(as.matrix(t(tmp_data)),type = "pearson")[['r']]; cor_mat = data.frame(cor_mat)
+#    cor_mat = rcorr(as.matrix(t(tmp_data)),type = "pearson")[['r']]; cor_mat = data.frame(cor_mat)
+    cor_mat = cor(as.matrix(t(tmp_data)), method = "spearman")
+    cor_mat = data.drame(cor_mat)
     dimnames(cor_mat) = list(rownames(tmp_data), rownames(tmp_data))
     tmp_names = list(rownames(tmp_data), "sign")
 
@@ -136,26 +122,45 @@ Down_Streams = function(gs_str, gs_db, eset, cellwidth = 4, cellheight = 4, show
     return(gs_list)
 }
 
+#' Downstream Grouping Results, without doing gene filtering
+#' @param gs_str: Vector. A list of gene set names (TFs)
+#' @param gs_db: List of list. Gene set data base
+#' @param eset: ExpressionSet of gene expression data
+#' @param cellwidth: plot width (default 4)
+#' @param cellheight:  plot height (default 4)
+#' @param showname: show colnames and rownames (default TRUE)
+#' @return List: gene grouping scheme
+#' @import pheatmap
+#' @import Biobase
+#' @export
 Down_Streams_nofiltering = function(gs_str, gs_db, eset, cellwidth = 4, cellheight = 4, showname = T){
-    require(pheatmap)
-    require(Biobase)
-    require(Hmisc)
+#    require(pheatmap)
+#    require(Biobase)
+#    require(Hmisc)
     if (is(eset, "ExpressionSet")){
         data = exprs(eset)
     }else{data = eset}
     g_inds = which(gs_db[[gs_str]] %in% rownames(data))
     tmp_data = data[gs_db[[gs_str]][g_inds], ]; rownames(tmp_data) = gs_db[[gs_str]][g_inds]
-    cor_mat = rcorr(as.matrix(t(tmp_data)),type = "pearson")[['r']]; cor_mat = data.frame(cor_mat)
+#    cor_mat = rcorr(as.matrix(t(tmp_data)),type = "pearson")[['r']]; cor_mat = data.frame(cor_mat)
+    cor_mat = cor(as.matrix(t(tmp_data)), method = "spearman")
+    cor_mat = data.drame(cor_mat)
 
     pheatmap(cor_mat, show_colnames= showname ,show_rownames = showname,
              color = colorRampPalette(c("blue", "white", "red"))(20),
              main = gs_str, border_color = FALSE, cellwidth = cellwidth, cellheight = cellheight)
 }
 
-###Activity Heatmap###
+#' Plotting TF gene expresion & activity heatmap
+#' @param new_activity: Matrix. TF activity matrix
+#' @param eset: ExpressionSet of gene expression data
+#' @return Heatmap plotting object
+#' @import ComplexHeatmap
+#' @importFrom circlize colorRamp2
+#' @export
 Activity_heatmap = function(new_activity, eset){
-    require(ComplexHeatmap)
-    require(circlize)
+#    require(ComplexHeatmap)
+#    require(circlize)
     if (is(eset, "ExpressionSet")){
         data = exprs(eset)
     }else{data = eset}
@@ -168,7 +173,10 @@ Activity_heatmap = function(new_activity, eset){
     H1 + H2
 }
 
-## Convert to log10 (CPM) measurement in the RNA-Seq matrix
+#' convert to log10 (CPM) measurement in the RNA-Seq matrix
+#' @param ctMat: Matrix of gene expression counts
+#' @return mat: Matrix of CPM gene expression
+#' @export
 toCPM = function(ctMat){
     L = colSums(ctMat)/10e6
     cts = sweep(ctMat, 2, L, FUN="/")
@@ -176,13 +184,17 @@ toCPM = function(ctMat){
     return(mat)
 }
 
+#' Plotting gene network
+#' @param tf_links: a data frame of networ interactions
+#' @return visNetwork object
+#' @import visNetwork
+#' @export
 plot_network = function(tf_links = tf_links){
-  require(visNetwork)
+#  require(visNetwork)
   topology=data.frame(as.matrix(tf_links), stringsAsFactors = F)
 
   node_list <- unique(c(topology[,1], topology[,2]))
   nodes <- data.frame(id = node_list, label = node_list, font.size =30, value=c(rep(1,length(node_list))))
-  
 
   #nodes <- data.frame(id = node_list, label = node_list, font.size =30,shape='circle',value=c(rep(1,length(node_list))))
   edge_col <- data.frame(c(1,2),c("blue","darkred"))
@@ -203,6 +215,12 @@ plot_network = function(tf_links = tf_links){
 #  visSave(network, file = file, selfcontained = F)
 }
 
+#' Filtered gene set database based on minimum sizes
+#' @param GSDB: list of list. gene set database
+#' @param geneList: a vector of available genes
+#' @param minSize: minimum number of genes of a gene set (default: 5)
+#' @return DB: list of list. filtered gene set database
+#' @export
 filterDB <- function(GSDB,geneList,minSize = 5)
 {
   nameTF <- names(GSDB)

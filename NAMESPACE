@@ -1,46 +1,36 @@
-importFrom(Hmisc,rcorr)
 import(Biobase)
 import(pheatmap)
 import(qvalue)
-importFrom(circlize, colorRamp2)
-import(igraph)
 import(fgsea)
-import(qvalue)
-import(gplots)
 import(mclust)
 import(fastmatch)
 import(limma)
-import(BiocParallel)
 import(Rcpp)
 import(visNetwork)
 import(entropy)
-import(reshape2)
 import(Mus.musculus)
 import(Homo.sapiens)
 import(ComplexHeatmap)
+importFrom(circlize,colorRamp2)
 
 export(
-    preprocess_counts,
+    Preprocess_counts,
     MicroDegs,
     RNAseqDegs_limma,
     RNAseqDegs_DESeq,
-    GSEA_permute,
+    GSEA_proc_R,
+    GSEA_proc_RC,
+    TF_GSEA,
+    TF_Selection,
+    Reselect_TFs,
     TF_Activity,
     allNet,
     TF_Filter,
     TF_Filter_addgene,
-    GSEA,
-    GSEA_new,
-    TF_GSEA,
-    TF_Selection,
-    Reselect_TFs,
-    cal_activity,
-    rem_data,
-    row_norm,
-    Hill,
     Down_Streams,
-    Activity_heatmap,
+    Down_Streams_nofiltering,
     toCPM,
+    Activity_heatmap,
     plot_network
 )
 

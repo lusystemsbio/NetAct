@@ -1,7 +1,12 @@
 ##########################################################
 ############# TF GSEA and Selection Function #############
 ##########################################################
-## GSEA implementation
+
+#' Compute the enrichment score (ES) from Gene Set Enrichment Analysis
+#' @param gene_list: a vector of genes in the expression data
+#' @param gene_set: a vector of genes in the gene set
+#' @param stats_vector: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @return ES: enrichment score
 GSEA = function(gene_list, gene_set, stats_vector){
   # Input genelist must be ordered.
   tag_indicator = sign(fmatch(gene_list, gene_set, nomatch = 0))
@@ -28,7 +33,17 @@ GSEA = function(gene_list, gene_set, stats_vector){
 ####################################################################
 ###################### New permutation method ######################
 ####################################################################
-GSEA_permutone= function(sim_all, gene_set, stats_vector, N){
+
+#' @title Compute ES scores for Gene Set Enrichment Analysis (GSEA) with a new permutation method (using a revised algorithm)
+#' @description To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
+#'              Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+#'              This function becomes unused in NetAct, as a much faster c++ implementation (GSEA_permute) is provided.
+#' @param sim_all: a vector of genes in the expression data
+#' @param gene_set: a vector of genes in the gene set
+#' @param stats_vector: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @param N: total number of genes (size of sim_all)
+#' @return ES: enrichment score
+GSEA_permut_R_revised = function(sim_all, gene_set, stats_vector, N){
   Nh = length(gene_set); Nm =  N - Nh; norm_no_tag = 1/Nm
   ES_cal_mat = lapply(sim_all, function(gene_list){
     random_tag_indicator = sign(fmatch(gene_list, gene_set, nomatch = 0))
@@ -50,16 +65,24 @@ GSEA_permutone= function(sim_all, gene_set, stats_vector, N){
   return(ES_vec)
 }
 
-####################################################################
-###################### Old permutation method ######################
-####################################################################
-## Permutate once
-permut_one = function(sim_all, gs, stats_vector){
+#' @title  Compute ES scores for Gene Set Enrichment Analysis (GSEA) with a new permutation method (using the original GSEA algorithm)
+#' @description The function uses the original GSEA enrichment score calculation but using the new permutation method.
+#'              Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+#' @param sim_all: a matrix of permutated gene lists
+#' @param gs: a vector of genes in the gene set
+#' @param stats_vector: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @return tmp_sim_sgeas: a vector of ES values for all permutated gene lists
+GSEA_permut_R = function(sim_all, gs, stats_vector){
   tmp_sim_gseas = unlist(lapply(sim_all, function(x) GSEA(x, gs, stats_vector)))
   return(tmp_sim_gseas)
 }
 
-## Normal mixture model p value
+#' @title  Estimation of p-value for Gene Set Enrichment Analysis (GSEA) using a normal mixture model
+#' @description From the enrichment scores (ESs) of the original and permutated gene lists, 
+#'              we estimate the p-value assuming that the distribution of the ESs is Gaussian.
+#' @param permutated_vector ESs for the original gene list ([1]) and all permutated gene lists ([2:n])
+#' @import mclust
+#' @return nm_pal: estimated p-value
 nm_pval=function(permutated_vector){
   ts=permutated_vector[1]
   tmp_m=Mclust(permutated_vector[2:length(permutated_vector)], parameter = T, modelNames = "V")
@@ -73,40 +96,67 @@ nm_pval=function(permutated_vector){
   return(pval)
 }
 
-## Permutation of the list
-permut_glist = function(gs_db, gene_list, minSize=5, n_permutation = 200){
-  genes = names(gene_list)
-  n_lens = sapply(gs_db, function(x) length(intersect(x, genes)))
+#' @title Gene Set Enrichment Analysis (GSEA) with a new permutation method -- implementation in R
+#' @description To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
+#'              Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+#' @param GSDB: gene set database (a list of gene sets, each of which is comprised of a vector genes)
+#' @param DElist: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
+#' @param nperm: the number of gene list permutations (default: 1000)
+#' @return data.frame(rslt_mat): a table of GSEA results:
+#'         tf: TF (gene set name)
+#'         es: ES score
+#'         lens: number of overlapping genes in each gene set
+#'         pvals: p-value by counting
+#'         z: z-score
+#'         qvals: q-value from pvals
+#' @import qvalue 
+#' @export
+GSEA_proc_R = function(GSDB, DElist, minSize=5, nperm = 1000){
+  genes = names(DElist)
+  n_lens = sapply(GSDB, function(x) length(intersect(x, genes)))
   ids = which(n_lens >= minSize)
-  gs_db = gs_db[ids]
-  sim_glists = vector(mode = "list", n_permutation)
-  sim_glists = lapply(sim_glists, function(x) x = sample(names(gene_list)))
-  sim_all = append(list(names(gene_list)), sim_glists)
-  tmp_stats_vector = as.numeric(gene_list)
+  GSDB = GSDB[ids]
+  sim_glists = vector(mode = "list", nperm)
+  sim_glists = lapply(sim_glists, function(x) x = sample(names(DElist)))
+  sim_all = append(list(names(DElist)), sim_glists)
+  tmp_stats_vector = as.numeric(DElist)
   
-  rlst_vector = numeric()
-  for (i in 1:length(gs_db)){
-    tmp_sim_gseas = permut_one(sim_all, gs_db[[i]], tmp_stats_vector)
-    tmp_gsea = tmp_sim_gseas[1]
-    if (tmp_gsea == -1){
-      rlst_vector = c(rlst_vector, -1, 1, 1)
-    }
-    else{
-      cat(names(gs_db)[i], "\n")
-      pval1 = nm_pval(tmp_sim_gseas)
-      pval2 = sum(tmp_sim_gseas > tmp_sim_gseas[1])/ n_permutation
-      rlst_vector = c(rlst_vector,tmp_gsea, pval1, pval2)
-    }
+  for (i in 1:length(GSDB)){
+    tmp_sim_gseas = GSEA_permut_R(sim_all, GSDB[[i]], tmp_stats_vector)
   }
-  rslt_mat = matrix(rlst_vector, ncol = 3, byrow = T)
-  rslt_mat = cbind(rslt_mat, qvalue(rslt_mat[,2])$qvalues,  qvalue(rslt_mat[,3])$qvalues, n_lens[ids])
-  colnames(rslt_mat) =  c("gsea", "pval1", "pval2", "qval1", "qval2", "size")
-  rslt_mat = rslt_mat[order(rslt_mat[,2], decreasing = F),]
-  return(data.frame(rslt_mat))
+  pvals = apply(sim_rslt, 1, function(x) sum(x[1] < x)/ nperm)
+  z = apply(sim_rslt, 1, function(x) (x[1]-mean(x[2:nperm+1]))/sd(x[2:nperm+1]) )
+  rslt = data.frame(tf = rownames(sim_rslt), es = gsea_rslt,
+                    lens = lens[ids], pvals = pvals, z = z)
+  rslt = rslt[order(rslt$pvals, decreasing = F),]
+  
+  qvals = qvalue(rslt$pvals, lambda=0)$qvalues
+  rslt$qvals = qvals
+  
+  return(rslt)
 }
 
-###
-GSEA_new = function(GSDB, DElist, minSize=5, nperm = 1000) {
+#' @title Gene Set Enrichment Analysis (GSEA) with a new permutation method -- implementation in R/c++ 
+#' @description To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
+#'              Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+#'              A much faster c++ implementation (GSEA_permute) is used.
+#' @param GSDB: gene set database (a list of gene sets, each of which is comprised of a vector genes)
+#' @param DElist: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
+#' @param nperm: the number of gene list permutations (default: 1000)
+#' @return data.frame(rslt_mat): a table of GSEA results:
+#'         tf: TF (gene set name)
+#'         es: ES score
+#'         lens: number of overlapping genes in each gene set
+#'         pvals: p-value by counting
+#'         z: z-score
+#'         qvals: q-value from pvals
+#' @import Rcpp
+#' @import qvalue 
+#' @import fastmatch
+#' @export
+GSEA_proc_RC = function(GSDB, DElist, minSize=5, nperm = 1000) {
   stats_vector = as.numeric(DElist)
   gene_list = names(DElist); N = length(gene_list)
   GSDB = lapply(GSDB, intersect, gene_list)
@@ -132,97 +182,107 @@ GSEA_new = function(GSDB, DElist, minSize=5, nperm = 1000) {
   return(rslt)
 }
 
-
-## GSEA Step
-TF_GSEA = function(GSDB, DErslt, minSize=5, nperm = 5000, specific = NULL){
+#' A unified Gene Set Enrichment Analysis (GSEA) function for three methods
+#' @param GSDB: gene set database (a list of gene sets, each of which is comprised of a vector genes)
+#' @param DErslt: DEG results
+#' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
+#' @param nperm: the number of gene list permutations (default: 1000)
+#' @param method: fast: fgsea; R: R implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed
+#' @return gseaRes: a table of GSEA results:
+#'         tf: TF (gene set name)
+#'         es: ES score
+#'         lens: number of overlapping genes in each gene set
+#'         pvals: p-value by counting
+#'         z: z-score
+#'         qvals: q-value from pvals
+#' @import fgsea
+#' @import qvalue 
+#' @export
+TF_GSEA = function(GSDB, DErslt, minSize=5, nperm = 1000, method = "binary"){
   DElist = DErslt$rank_vector
-  if (! is.null(specific)){
-    stopifnot(specific %in% c("fast", "old"))
-    if (specific == "fast"){
-      gseaRes = fgsea(GSDB, DElist, nperm=nperm, maxSize=1000, minSize = minSize)
-      gseaRes = gseaRes[order(gseaRes$padj),]
-      gseaRes = data.frame(gseaRes[,c(1:3, 7)])
-      colnames(gseaRes)[1] = "tf"
-      gseaRes$qval = qvalue(gseaRes$pval)$qvalues
-      
-      return(gseaRes)
-    }else{
-      l = permut_glist(GSDB, DElist, minSize = minSize, n_permutation = nperm)
-      return(l)
-    }
+  if(method == "fast"){
+    gseaRes = fgsea(GSDB, DElist, nperm=nperm, maxSize=1000, minSize = minSize)
+    gseaRes = gseaRes[order(gseaRes$padj),]
+    gseaRes = data.frame(gseaRes[,c(1,4,7,2)])
+    colnames(gseaRes) = c("tf", "es", "lens", "pvals")
+    gseaRes$qvals = qvalue(gseaRes$pval)$qvalues
+  }else if(method == "r"){
+    gseaRes = GSEA_proc_R(GSDB, DElist, minSize = minSize, nperm = nperm)
   }else{
-    gseaRes = GSEA_new(GSDB, DElist, minSize = minSize, nperm = nperm)
-    return(gseaRes)
+    gseaRes = GSEA_proc_RC(GSDB, DElist, minSize = minSize, nperm = nperm)
   }
+  return(gseaRes)
 }
 
-
-
-####TF_Selection####
-TF_Selection = function(GSDB, DErslt, minSize=5, nperm = 5000, specific = NULL, qval = 0.05, compList = NULL, ntop = NULL, nameFile = NULL) {
+#' Identifying enriched TFs using Gene Set Enrichment Analysis (GSEA) -- a wrapper function with many options
+#' @param GSDB: gene set database (a list of gene sets, each of which is comprised of a vector genes)
+#' @param DErslt: DEG results
+#' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
+#' @param nperm: the number of gene list permutations (default: 1000)
+#' @param method: fast: fgsea; R: R implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed
+#' @param qval: q-value cutoff (default: 0.05)
+#' @param compList: a vector of comparisons, it needs to be consistent with DErslt from MicroDegs, RNAseqDegs_limma, and RNAseqDegs_DESeq.
+#'                  GSEA is applied to each comparison 
+#' @param ntop: the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)
+#' @param nameFile: file name to save the GSEA results (default: NULL, no output to a file). 
+#'                  The saved results can be reused later to adjust the TF selection parameters
+#' @return a list of results: 
+#'         GSEArslt: a dataframe of GSEA results (see TF_GSEA)
+#'         tfs: a vector of selected TFs
+#' @export
+TF_Selection = function(GSDB, DErslt, minSize=5, nperm = 5000, method = "binary", qval = 0.05, 
+                        compList = NULL, ntop = NULL, nameFile = NULL) {
   
   if(is.null(compList) | length(compList) == 1) {
-    
-    gsearslt <- TF_GSEA(GSDB = GSDB, DErslt = DErslt, minSize = minSize, nperm = nperm, specific = specific)
+    gsearslt <- TF_GSEA(GSDB = GSDB, DErslt = DErslt, minSize = minSize, nperm = nperm, method = method)
     tfs <- as.character(gsearslt$tf[gsearslt$qvals < qval[1]])
-    
     if(!is.null(ntop)){
       if(length(tfs) > ntop){
         tfs = tfs[1:ntop]
       }
     }
-    
     tfs = sort(tfs)
     output <- list(GSEArslt = list(gsearslt), tfs = tfs)
-  
   }else{
-    
     if ((length(qval) != 1) & (length(qval) != length(compList)))  {
-      
       stop("qvalue length must be equal to 1 OR the number of comparisons")
     }
-    
     if (length(qval) == 1) {
-      
       qval <- rep(qval, length(compList))
     }
-    
     gsea_results_list <- vector(mode = "list", length = length(compList))
     names(gsea_results_list) <- compList
     tfs = character()
-    
     for (i in 1:length(compList)) {
-      
-      gsea_results_list[[i]] <- TF_GSEA(GSDB = GSDB, DErslt = DErslt[[i]], minSize = minSize, nperm = nperm, specific = specific)
+      gsea_results_list[[i]] <- TF_GSEA(GSDB = GSDB, DErslt = DErslt[[i]], minSize = minSize, nperm = nperm, method = method)
       tfs_tmp <- as.character(gsea_results_list[[i]]$tf[gsea_results_list[[i]]$qvals < qval[i]])
-      
       if(!is.null(ntop)){
         if(length(tfs_tmp) > ntop){
           tfs_tmp = tfs_tmp[1:ntop]
         }
       }
-      
       tfs = c(tfs, tfs_tmp)
     }
-    
     tfs = sort(unique(tfs))
     output <- list(GSEArslt = gsea_results_list, tfs = tfs)
   }
 
   if (!is.null(nameFile)) {
-    
     saveRDS(output, file = paste0(nameFile, ".RDS" ))
-    
   }
   return(output)
-  
 }
 
-####Reselect_TFs####
+#' Reselecting TFs using gene set enrichement analysis (GSEA) using an adjusted set of parameters (work together with TF_Selection)
+#' @param GSEArslt: GSEA results from TF_Selection
+#' @param DErslt: DEG results
+#' @param qval: q-value cutoff (default: 0.05)
+#' @param combine_TFs: whether combine selected TFs from multiple comparisons or not (default: TRUE)
+#' @param ntop: the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)
+#' @return tfs: a vector of selected TFs
+#' @export
 Reselect_TFs = function(GSEArslt, qval = 0.05, combine_TFs = TRUE, ntop = NULL) {
-  
   if (length(GSEArslt) == 1) {
-    
     tfs <- as.character(GSEArslt[[1]]$tf[which(GSEArslt[[1]]$qvals < qval[1])])
     if(!is.null(ntop)){
       if(length(tfs) > ntop){
@@ -230,44 +290,28 @@ Reselect_TFs = function(GSEArslt, qval = 0.05, combine_TFs = TRUE, ntop = NULL) 
       }
     }
     tfs = sort(tfs)
-    
   } else {
-    
     if ((length(qval) != 1) & (length(qval) != length(GSEArslt)))  {
-      
       stop("qvalue length must be equal to 1 OR the number of comparisons")
     }
-    
     if (length(qval) == 1) {
-      
       qval <- rep(qval, length(GSEArslt))
     }
-    
     tfs = vector(mode = "list", length = length(GSEArslt))
-    
     for (i in 1:length(GSEArslt)) {
-      
       tfs_tmp <- as.character(GSEArslt[[i]]$tf[GSEArslt[[i]]$qvals < qval[i]])
-      
       if(!is.null(ntop)){
         if(length(tfs_tmp) > ntop){
           tfs_tmp = tfs_tmp[1:ntop]
         }
       }
-      
       tfs[[i]] = sort(tfs_tmp)
-      
     }
-    
     if (combine_TFs) {
-      
       tfs = sort(unique(unlist(tfs)))
-      
     } else {
-      
       names(tfs) <- names(GSEArslt)
     }
   }
-  
   return(tfs)
 }

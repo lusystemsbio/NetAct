@@ -67,7 +67,8 @@ rownames(phenoData) = colnames(x$counts)
 Fro RNA-seq data, NetAct provides a useful pre-processing function called ```preprocess_counts()``` that filters out lowly expressed genes and retrieves associated gene symbols for raw count data. Differentially expressed genes (DEGs) are then identified using the limma package. The resultant normalized expression data is saved alongside the *phenoData* metadata into the standard ```ExpressionSet``` object for downstream analysis. 
 
 ```{r }
-counts <- preprocess_counts(counts = x$counts, groups = group, mouse = TRUE)
+library(Mus.musculus)
+counts <- Preprocess_counts(counts = x$counts, groups = group, mouse = TRUE)
 DErslt = RNAseqDegs_limma(counts = counts, phenodata = phenoData, 
                           complist = compList, qval = 0.05)
 neweset = ExpressionSet(assayData = as.matrix(DErslt$Overall$e), phenoData = phenoData)
