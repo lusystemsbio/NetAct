@@ -7,11 +7,11 @@
 GSEA_score(gene_list, gene_set, stats_vector)
 }
 \arguments{
-\item{gene_list:}{a vector of genes in the expression data}
+\item{gene_list}{a vector of genes in the expression data}
 
-\item{gene_set:}{a vector of genes in the gene set}
+\item{gene_set}{a vector of genes in the gene set}
 
-\item{stats_vector:}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
+\item{stats_vector}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
 }
 \value{
 ES: enrichment score

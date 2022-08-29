@@ -3,7 +3,7 @@
 ####################################################
 
 #' Remove Non-informative genes
-#' @param x: gene expression matrix
+#' @param x gene expression matrix
 #' @return x: gene expression matrix without containing non-informative genes
 rem_data = function(x){
     rem_ids = which(apply(x, 1, sd) == 0)
@@ -16,7 +16,7 @@ rem_data = function(x){
 }
 
 #' Row normalization (standardization)
-#' @param data: gene expression matrix
+#' @param data gene expression matrix
 #' @return norm_data: standardized gene expression matrix
 row_norm = function(data){
     row_mean = apply(data, 1, mean)
@@ -26,21 +26,21 @@ row_norm = function(data){
 }
 
 #' Hill function for the gene weight
-#' @param x: value (adj p-value)
-#' @param ind: Hill coefficient
+#' @param x value (adj p-value)
+#' @param ind Hill coefficient
 #' @return Hill function of x
 Hill = function(x, ind){
     return(1/ (1 + (x/0.05) ^(ind)))
 }
 
 #' Downstream Grouping Results
-#' @param gs_str: Vector. A list of gene set names (TFs)
-#' @param gs_db: List of list. Gene set data base
-#' @param eset: ExpressionSet of gene expression data
-#' @param cellwidth: plot width (default 4)
-#' @param cellheight:  plot height (default 4)
-#' @param showname: show colnames and rownames (default TRUE)
-#' @param use_module: use modularity of gene grouping (default TRUE)
+#' @param gs_str Vector. A list of gene set names (TFs)
+#' @param gs_db List of list. Gene set data base
+#' @param eset ExpressionSet of gene expression data
+#' @param cellwidth plot width (default 4)
+#' @param cellheight  plot height (default 4)
+#' @param showname show colnames and rownames (default TRUE)
+#' @param use_module use modularity of gene grouping (default TRUE)
 #' @return List: gene grouping scheme
 #' @import pheatmap
 #' @import Biobase
@@ -102,7 +102,7 @@ Down_Streams = function(gs_str, gs_db, eset, cellwidth = 4, cellheight = 4, show
             }
         }
         if(length(gs_list) == 1){
-            pheatmap(cor_mat[gs_remain, gs_remain], show_colnames= F ,show_rownames = F,
+          pheatmap::pheatmap(cor_mat[gs_remain, gs_remain], show_colnames= F ,show_rownames = F,
                      color = colorRampPalette(c("blue", "white", "red"))(20),
                      main = gs_str, border_color = FALSE, cellwidth = cellwidth, cellheight = cellheight)
         }
@@ -112,7 +112,7 @@ Down_Streams = function(gs_str, gs_db, eset, cellwidth = 4, cellheight = 4, show
             rownames(annotation_rc) = gs_remain
             genes =  c("purple3", "orange3"); names(genes) <- c("Type1", "Type2")
             anno_colors = list(genes = genes)
-            pheatmap(cor_mat[gs_remain, gs_remain], show_colnames= showname ,show_rownames = showname,
+            pheatmap::pheatmap(cor_mat[gs_remain, gs_remain], show_colnames= showname ,show_rownames = showname,
                      annotation_row = annotation_rc, annotation_col = annotation_rc,
                      annotation_colors = anno_colors,
                      color = colorRampPalette(c("blue", "white", "red"))(20),
@@ -123,12 +123,12 @@ Down_Streams = function(gs_str, gs_db, eset, cellwidth = 4, cellheight = 4, show
 }
 
 #' Downstream Grouping Results, without doing gene filtering
-#' @param gs_str: Vector. A list of gene set names (TFs)
-#' @param gs_db: List of list. Gene set data base
-#' @param eset: ExpressionSet of gene expression data
-#' @param cellwidth: plot width (default 4)
-#' @param cellheight:  plot height (default 4)
-#' @param showname: show colnames and rownames (default TRUE)
+#' @param gs_str Vector. A list of gene set names (TFs)
+#' @param gs_db List of list. Gene set data base
+#' @param eset ExpressionSet of gene expression data
+#' @param cellwidth plot width (default 4)
+#' @param cellheight  plot height (default 4)
+#' @param showname show colnames and rownames (default TRUE)
 #' @return List: gene grouping scheme
 #' @import pheatmap
 #' @import Biobase
@@ -146,14 +146,14 @@ Down_Streams_nofiltering = function(gs_str, gs_db, eset, cellwidth = 4, cellheig
     cor_mat = cor(as.matrix(t(tmp_data)), method = "spearman")
     cor_mat = data.drame(cor_mat)
 
-    pheatmap(cor_mat, show_colnames= showname ,show_rownames = showname,
+    pheatmap::pheatmap(cor_mat, show_colnames= showname ,show_rownames = showname,
              color = colorRampPalette(c("blue", "white", "red"))(20),
              main = gs_str, border_color = FALSE, cellwidth = cellwidth, cellheight = cellheight)
 }
 
 #' Plotting TF gene expresion & activity heatmap
-#' @param new_activity: Matrix. TF activity matrix
-#' @param eset: ExpressionSet of gene expression data
+#' @param new_activity Matrix. TF activity matrix
+#' @param eset ExpressionSet of gene expression data
 #' @return Heatmap plotting object
 #' @import ComplexHeatmap
 #' @importFrom circlize colorRamp2
@@ -174,7 +174,7 @@ Activity_heatmap = function(new_activity, eset){
 }
 
 #' convert to log10 (CPM) measurement in the RNA-Seq matrix
-#' @param ctMat: Matrix of gene expression counts
+#' @param ctMat Matrix of gene expression counts
 #' @return mat: Matrix of CPM gene expression
 #' @export
 toCPM = function(ctMat){
@@ -185,7 +185,7 @@ toCPM = function(ctMat){
 }
 
 #' Plotting gene network
-#' @param tf_links: a data frame of networ interactions
+#' @param tf_links a data frame of networ interactions
 #' @return visNetwork object
 #' @import visNetwork
 #' @export
@@ -216,9 +216,9 @@ plot_network = function(tf_links = tf_links){
 }
 
 #' Filtered gene set database based on minimum sizes
-#' @param GSDB: list of list. gene set database
-#' @param geneList: a vector of available genes
-#' @param minSize: minimum number of genes of a gene set (default: 5)
+#' @param GSDB list of list. gene set database
+#' @param geneList a vector of available genes
+#' @param minSize minimum number of genes of a gene set (default: 5)
 #' @return DB: list of list. filtered gene set database
 #' @export
 filterDB <- function(GSDB,geneList,minSize = 5)

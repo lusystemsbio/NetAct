@@ -7,9 +7,9 @@
 Hill(x, ind)
 }
 \arguments{
-\item{x:}{value (adj p-value)}
+\item{x}{value (adj p-value)}
 
-\item{ind:}{Hill coefficient}
+\item{ind}{Hill coefficient}
 }
 \value{
 Hill function of x

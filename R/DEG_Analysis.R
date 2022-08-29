@@ -5,9 +5,9 @@
 #' @title RNA-seq data pre processing
 #' @description NetAct uses edgeR to load the count data and the group information for experimental conditions, 
 #'              It also coverts gene symbols and remove duplicates.
-#' @param counts: raw count matrix
-#' @param groups: group information for experimental conditions
-#' @param mouse: use mouse genome or not (default: FALSE)
+#' @param counts raw count matrix
+#' @param groups group information for experimental conditions
+#' @param mouse use mouse genome or not (default: FALSE)
 #' @return x$counts: processed count matrix
 #' @export
 #' @import edgeR
@@ -17,7 +17,7 @@
 Preprocess_counts <- function(counts, groups, mouse = FALSE) {
 #  require(edgeR)
    require(Mus.musculus)
-#  require(Homo.sapiens)
+   require(Homo.sapiens)
 #  Create DGEList and Filter
   x <- DGEList(counts, group = groups)
   
@@ -52,9 +52,9 @@ Preprocess_counts <- function(counts, groups, mouse = FALSE) {
 }
 
 #' @title Helper Function For DEG Analysis of microArray Data (for a single comparison)
-#' @param eset: Processed gene expression data in the ExpressionSet format
+#' @param eset Processed gene expression data in the ExpressionSet format
 #'              batch & experimental conditions are provided in pData. 
-#' @param qval: q-value cutoff for DEG analysis (default: 0.05)
+#' @param qval q-value cutoff for DEG analysis (default: 0.05)
 #' @return DEG result in the format of a list containing:
 #'         table: table of DEG results.
 #'         rank_vector: a vector of t-statistics for every gene.
@@ -82,10 +82,10 @@ DEG_Analysis_Micro <- function(eset, qval = 0.05) {
 }
 
 #' @title Helper Function For DEG Analysis of microArray Data (for all cases, including single and multiple comparisons)
-#' @param eset: Processed gene expression data in the ExpressionSet format
+#' @param eset Processed gene expression data in the ExpressionSet format
 #'              batch & experimental conditions are provided in pData. 
-#' @param compList: a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
-#' @param qval: q-value cutoff for DEG analysis (default: 0.05)
+#' @param compList a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
+#' @param qval q-value cutoff for DEG analysis (default: 0.05)
 #' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison.
 #'         Each DEG result is in the format of A list containing:
 #'         table: table of DEG results.
@@ -155,11 +155,11 @@ MicroDegs = function(eset, compList, qval = 0.05) {
 }
 
 #' @title Helper Function For DEG Analysis of RNA-seq Data using limma + Voom
-#' @param counts: Processed gene expression count data
-#' @param phenodata: pData that provides batch & experimental conditions
-#' @param complist: a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
-#' @param lfc: (optional) log fold change constraints for DEGs
-#' @param qval: q-value cutoff for DEG analysis (default: 0.05)
+#' @param counts Processed gene expression count data
+#' @param phenodata pData that provides batch & experimental conditions
+#' @param complist a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
+#' @param lfc (optional) log fold change constraints for DEGs
+#' @param qval q-value cutoff for DEG analysis (default: 0.05)
 #' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison.
 #'         Each DEG result is in the format of A list containing:
 #'         table: table of DEG results.
@@ -268,10 +268,10 @@ RNAseqDegs_limma = function(counts, phenodata, complist, lfc, qval = 0.05) {
 }
 
 #' @title Helper Function For DEG Analysis of RNA-seq Data using DESeq
-#' @param counts: Processed gene expression count data
-#' @param phenodata: pData that provides batch & experimental conditions
-#' @param compList: a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
-#' @param qval: q-value cutoff for DEG analysis (default: 0.05)
+#' @param counts Processed gene expression count data
+#' @param phenodata pData that provides batch & experimental conditions
+#' @param complist a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
+#' @param qval q-value cutoff for DEG analysis (default: 0.05)
 #' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison.
 #'         Each DEG result is in the format of A list containing:
 #'         table: table of DEG results.

@@ -3,14 +3,14 @@
 ########################################################
 
 #' Inference of TF activity
-#' @param tfs: a vector of selected tfs
-#' @param GSDB: gene set database (a list of gene sets, each of which is comprised of a vector genes)
-#' @param eset: expression set of gene expression data
-#' @param DErslt: DEG results
-#' @param with_weight: whether weighting factors (based on DEG p-values) are used to compute TF activity (default: TRUE)
-#' @param if_module: whether the grouping scheme (activation or inhibition) depends on module detection algorithm (default: FALSE, no need to change)
-#' @param ind: Hill coefficient parameter used in the weighting factors (default: 1/5, recommend to use 0 < ind < 1/4)
-#' @param useCorSign: allow the option to use the TF gene expression correlation to flip signs (default: TRUE)
+#' @param tfs a vector of selected tfs
+#' @param GSDB gene set database (a list of gene sets, each of which is comprised of a vector genes)
+#' @param eset expression set of gene expression data
+#' @param DErslt DEG results
+#' @param with_weight whether weighting factors (based on DEG p-values) are used to compute TF activity (default: TRUE)
+#' @param if_module whether the grouping scheme (activation or inhibition) depends on module detection algorithm (default: FALSE, no need to change)
+#' @param ind Hill coefficient parameter used in the weighting factors (default: 1/5, recommend to use 0 < ind < 1/4)
+#' @param useCorSign allow the option to use the TF gene expression correlation to flip signs (default: TRUE)
 #' @return a list of results: 
 #'         all_list: grouping scheme of all TF gene sets.
 #'         all_activity: matrix of TF activity.
@@ -125,14 +125,14 @@ TF_Activity = function (tfs, GSDB, eset, DErslt, with_weight = TRUE, if_module =
 }
 
 #' The core function to compute the activity profile of an TF
-#' @param gs_remain: a vector of target genes after filtering
-#' @param tmp_data: gene expression of target genes
-#' @param tmp_sign: sign of target genes (+1 for one group, -1 for the other)
-#' @param ind: Hill coefficient parameter used in the weighting factors (default: 1/5, recommend to use 0 < ind < 1/4)
-#' @param with_weight: whether weighting factors (based on DEG p-values) are used to compute TF activity (default: TRUE)
-#' @param DE_weights: a vector of the input for computing DE weighting factors (typically, adjusted p-values from DEG analysis)
-#' @param tf_exprs: a vector of gene expression of the TF
-#' @param useCorSign: allow the option to use the TF gene expression correlation to flip signs (default: TRUE)
+#' @param gs_remain a vector of target genes after filtering
+#' @param tmp_data gene expression of target genes
+#' @param tmp_sign sign of target genes (+1 for one group, -1 for the other)
+#' @param ind Hill coefficient parameter used in the weighting factors (default: 1/5, recommend to use 0 < ind < 1/4)
+#' @param with_weight whether weighting factors (based on DEG p-values) are used to compute TF activity (default: TRUE)
+#' @param DE_weights a vector of the input for computing DE weighting factors (typically, adjusted p-values from DEG analysis)
+#' @param tf_exprs a vector of gene expression of the TF
+#' @param useCorSign allow the option to use the TF gene expression correlation to flip signs (default: TRUE)
 #' @return a list of results: 
 #'         activity: matrix of TF activity.
 #'         sign: grouping scheme of all TF gene sets.

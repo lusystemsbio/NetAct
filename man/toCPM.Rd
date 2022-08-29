@@ -7,7 +7,7 @@
 toCPM(ctMat)
 }
 \arguments{
-\item{ctMat:}{Matrix of gene expression counts}
+\item{ctMat}{Matrix of gene expression counts}
 }
 \value{
 mat: Matrix of CPM gene expression

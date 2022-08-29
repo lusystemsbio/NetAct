@@ -7,9 +7,9 @@
 Activity_heatmap(new_activity, eset)
 }
 \arguments{
-\item{new_activity:}{Matrix. TF activity matrix}
+\item{new_activity}{Matrix. TF activity matrix}
 
-\item{eset:}{ExpressionSet of gene expression data}
+\item{eset}{ExpressionSet of gene expression data}
 }
 \value{
 Heatmap plotting object

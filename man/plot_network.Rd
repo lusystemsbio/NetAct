@@ -7,7 +7,7 @@
 plot_network(tf_links = tf_links)
 }
 \arguments{
-\item{tf_links:}{a data frame of networ interactions}
+\item{tf_links}{a data frame of networ interactions}
 }
 \value{
 visNetwork object

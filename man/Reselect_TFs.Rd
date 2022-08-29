@@ -7,15 +7,13 @@
 Reselect_TFs(GSEArslt, qval = 0.05, combine_TFs = TRUE, ntop = NULL)
 }
 \arguments{
-\item{GSEArslt:}{GSEA results from TF_Selection}
+\item{GSEArslt}{GSEA results from TF_Selection}
 
-\item{DErslt:}{DEG results}
+\item{qval}{q-value cutoff (default: 0.05)}
 
-\item{qval:}{q-value cutoff (default: 0.05)}
+\item{combine_TFs}{whether combine selected TFs from multiple comparisons or not (default: TRUE)}
 
-\item{combine_TFs:}{whether combine selected TFs from multiple comparisons or not (default: TRUE)}
-
-\item{ntop:}{the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)}
+\item{ntop}{the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)}
 }
 \value{
 tfs: a vector of selected TFs

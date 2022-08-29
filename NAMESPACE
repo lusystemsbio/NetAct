@@ -1,7 +1,6 @@
 import(edgeR)
 import(Biobase)
 import(biomaRt)
-import(pheatmap)
 import(qvalue)
 import(fgsea)
 import(mclust)
@@ -13,8 +12,12 @@ import(entropy)
 import(reshape2)
 import(Mus.musculus)
 import(Homo.sapiens)
+import(pheatmap)
 import(ComplexHeatmap)
 importFrom(circlize,colorRamp2)
+importFrom(grDevices, colorRampPalette)
+importFrom(stats, complete.cases, cor, kmeans, model.matrix, pnorm, sd)
+importFrom(utils, write.csv)
 
 export(
     Preprocess_counts,

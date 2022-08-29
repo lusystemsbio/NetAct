@@ -7,16 +7,16 @@
 GSEA_permut_R(sim_all, gs, stats_vector)
 }
 \arguments{
-\item{sim_all:}{a matrix of permutated gene lists}
+\item{sim_all}{a matrix of permutated gene lists}
 
-\item{gs:}{a vector of genes in the gene set}
+\item{gs}{a vector of genes in the gene set}
 
-\item{stats_vector:}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
+\item{stats_vector}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
 }
 \value{
 tmp_sim_sgeas: a vector of ES values for all permutated gene lists
 }
 \description{
 The function uses the original GSEA enrichment score calculation but using the new permutation method.
-             Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
 }

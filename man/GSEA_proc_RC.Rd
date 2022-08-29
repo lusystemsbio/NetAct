@@ -7,25 +7,25 @@
 GSEA_proc_RC(GSDB, DElist, minSize = 5, nperm = 1000)
 }
 \arguments{
-\item{GSDB:}{gene set database (a list of gene sets, each of which is comprised of a vector genes)}
+\item{GSDB}{gene set database (a list of gene sets, each of which is comprised of a vector genes)}
 
-\item{DElist:}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
+\item{DElist}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
 
-\item{minSize:}{the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)}
+\item{minSize}{the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)}
 
-\item{nperm:}{the number of gene list permutations (default: 1000)}
+\item{nperm}{the number of gene list permutations (default: 1000)}
 }
 \value{
 data.frame(rslt_mat): a table of GSEA results:
-        tf: TF (gene set name).
-        es: ES score.
-        lens: number of overlapping genes in each gene set.
-        pvals: p-value by counting.
-        z: z-score.
-        qvals: q-value from pvals.
+tf: TF (gene set name).
+es: ES score.
+lens: number of overlapping genes in each gene set.
+pvals: p-value by counting.
+z: z-score.
+qvals: q-value from pvals.
 }
 \description{
-To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
-             Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
-             A much faster c++ implementation (GSEA_permute) is used.
+To improve computational efficiency, we devised a new permutation approach by swapping stats_vector.
+Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+A much faster c++ implementation (GSEA_permute) is used.
 }

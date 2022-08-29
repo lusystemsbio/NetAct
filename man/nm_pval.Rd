@@ -7,12 +7,12 @@
 nm_pval(permutated_vector)
 }
 \arguments{
-\item{permutated_vector}{ESs for the original gene list ([1]) and all permutated gene lists ([2:n])}
+\item{permutated_vector}{ESs for the original gene list (1) and all permutated gene lists (2:n)}
 }
 \value{
 nm_pal: estimated p-value
 }
 \description{
-From the enrichment scores (ESs) of the original and permutated gene lists, 
-             we estimate the p-value assuming that the distribution of the ESs is Gaussian.
+From the enrichment scores (ESs) of the original and permutated gene lists,
+we estimate the p-value assuming that the distribution of the ESs is Gaussian.
 }

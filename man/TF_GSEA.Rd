@@ -7,24 +7,24 @@
 TF_GSEA(GSDB, DErslt, minSize = 5, nperm = 1000, method = "binary")
 }
 \arguments{
-\item{GSDB:}{gene set database (a list of gene sets, each of which is comprised of a vector genes)}
+\item{GSDB}{gene set database (a list of gene sets, each of which is comprised of a vector genes)}
 
-\item{DErslt:}{DEG results}
+\item{DErslt}{DEG results}
 
-\item{minSize:}{the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)}
+\item{minSize}{the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)}
 
-\item{nperm:}{the number of gene list permutations (default: 1000)}
+\item{nperm}{the number of gene list permutations (default: 1000)}
 
-\item{method:}{fast: fgsea; r: R implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed}
+\item{method}{fast: fgsea; r: R implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed}
 }
 \value{
 gseaRes: a table of GSEA results:
-        tf: TF (gene set name).
-        es: ES score.
-        lens: number of overlapping genes in each gene set.
-        pvals: p-value by counting.
-        z: z-score.
-        qvals: q-value from pvals.
+tf: TF (gene set name).
+es: ES score.
+lens: number of overlapping genes in each gene set.
+pvals: p-value by counting.
+z: z-score.
+qvals: q-value from pvals.
 }
 \description{
 A unified Gene Set Enrichment Analysis (GSEA) function for three methods

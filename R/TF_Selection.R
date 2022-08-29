@@ -3,9 +3,9 @@
 ##########################################################
 
 #' Compute the enrichment score (ES) from Gene Set Enrichment Analysis
-#' @param gene_list: a vector of genes in the expression data
-#' @param gene_set: a vector of genes in the gene set
-#' @param stats_vector: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @param gene_list a vector of genes in the expression data
+#' @param gene_set a vector of genes in the gene set
+#' @param stats_vector a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
 #' @return ES: enrichment score
 #' @export
 GSEA_score = function(gene_list, gene_set, stats_vector){
@@ -39,10 +39,10 @@ GSEA_score = function(gene_list, gene_set, stats_vector){
 #' @description To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
 #'              Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
 #'              This function becomes unused in NetAct, as a much faster c++ implementation (GSEA_permute) is provided.
-#' @param sim_all: a vector of genes in the expression data
-#' @param gene_set: a vector of genes in the gene set
-#' @param stats_vector: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
-#' @param N: total number of genes (size of sim_all)
+#' @param sim_all a vector of genes in the expression data
+#' @param gene_set a vector of genes in the gene set
+#' @param stats_vector a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @param N total number of genes (size of sim_all)
 #' @return ES: enrichment score
 GSEA_permut_R_revised = function(sim_all, gene_set, stats_vector, N){
   Nh = length(gene_set); Nm =  N - Nh; norm_no_tag = 1/Nm
@@ -69,9 +69,9 @@ GSEA_permut_R_revised = function(sim_all, gene_set, stats_vector, N){
 #' @title  Compute ES scores for Gene Set Enrichment Analysis (GSEA) with a new permutation method (using the original GSEA algorithm)
 #' @description The function uses the original GSEA enrichment score calculation but using the new permutation method.
 #'              Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
-#' @param sim_all: a matrix of permutated gene lists
-#' @param gs: a vector of genes in the gene set
-#' @param stats_vector: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @param sim_all a matrix of permutated gene lists
+#' @param gs a vector of genes in the gene set
+#' @param stats_vector a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
 #' @return tmp_sim_sgeas: a vector of ES values for all permutated gene lists
 GSEA_permut_R = function(sim_all, gs, stats_vector){
   tmp_sim_gseas = unlist(lapply(sim_all, function(x) GSEA_score(x, gs, stats_vector)))
@@ -81,7 +81,7 @@ GSEA_permut_R = function(sim_all, gs, stats_vector){
 #' @title  Estimation of p-value for Gene Set Enrichment Analysis (GSEA) using a normal mixture model
 #' @description From the enrichment scores (ESs) of the original and permutated gene lists, 
 #'              we estimate the p-value assuming that the distribution of the ESs is Gaussian.
-#' @param permutated_vector ESs for the original gene list ([1]) and all permutated gene lists ([2:n])
+#' @param permutated_vector ESs for the original gene list (1) and all permutated gene lists (2:n)
 #' @import mclust
 #' @return nm_pal: estimated p-value
 nm_pval=function(permutated_vector){
@@ -100,10 +100,10 @@ nm_pval=function(permutated_vector){
 #' @title Gene Set Enrichment Analysis (GSEA) with a new permutation method -- implementation in R
 #' @description To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
 #'              Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
-#' @param GSDB: gene set database (a list of gene sets, each of which is comprised of a vector genes)
-#' @param DElist: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
-#' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
-#' @param nperm: the number of gene list permutations (default: 1000)
+#' @param GSDB gene set database (a list of gene sets, each of which is comprised of a vector genes)
+#' @param DElist a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @param minSize the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
+#' @param nperm the number of gene list permutations (default: 1000)
 #' @return data.frame(rslt_mat): a table of GSEA results:
 #'         tf: TF (gene set name).
 #'         es: ES score.
@@ -142,10 +142,10 @@ GSEA_proc_R = function(GSDB, DElist, minSize=5, nperm = 1000){
 #' @description To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
 #'              Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
 #'              A much faster c++ implementation (GSEA_permute) is used.
-#' @param GSDB: gene set database (a list of gene sets, each of which is comprised of a vector genes)
-#' @param DElist: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
-#' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
-#' @param nperm: the number of gene list permutations (default: 1000)
+#' @param GSDB gene set database (a list of gene sets, each of which is comprised of a vector genes)
+#' @param DElist a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @param minSize the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
+#' @param nperm the number of gene list permutations (default: 1000)
 #' @return data.frame(rslt_mat): a table of GSEA results:
 #'         tf: TF (gene set name).
 #'         es: ES score.
@@ -184,11 +184,11 @@ GSEA_proc_RC = function(GSDB, DElist, minSize=5, nperm = 1000) {
 }
 
 #' A unified Gene Set Enrichment Analysis (GSEA) function for three methods
-#' @param GSDB: gene set database (a list of gene sets, each of which is comprised of a vector genes)
-#' @param DErslt: DEG results
-#' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
-#' @param nperm: the number of gene list permutations (default: 1000)
-#' @param method: fast: fgsea; r: R implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed
+#' @param GSDB gene set database (a list of gene sets, each of which is comprised of a vector genes)
+#' @param DErslt DEG results
+#' @param minSize the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
+#' @param nperm the number of gene list permutations (default: 1000)
+#' @param method fast: fgsea; r: R implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed
 #' @return gseaRes: a table of GSEA results:
 #'         tf: TF (gene set name).
 #'         es: ES score.
@@ -216,16 +216,16 @@ TF_GSEA = function(GSDB, DErslt, minSize=5, nperm = 1000, method = "binary"){
 }
 
 #' Identifying enriched TFs using Gene Set Enrichment Analysis (GSEA) -- a wrapper function with many options
-#' @param GSDB: gene set database (a list of gene sets, each of which is comprised of a vector genes)
-#' @param DErslt: DEG results
-#' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
-#' @param nperm: the number of gene list permutations (default: 1000)
-#' @param method: fast: fgsea; R: r implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed
-#' @param qval: q-value cutoff (default: 0.05)
-#' @param compList: a vector of comparisons, it needs to be consistent with DErslt from MicroDegs, RNAseqDegs_limma, and RNAseqDegs_DESeq.
+#' @param GSDB gene set database (a list of gene sets, each of which is comprised of a vector genes)
+#' @param DErslt DEG results
+#' @param minSize the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
+#' @param nperm the number of gene list permutations (default: 1000)
+#' @param method fast: fgsea; R: r implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed
+#' @param qval q-value cutoff (default: 0.05)
+#' @param compList a vector of comparisons, it needs to be consistent with DErslt from MicroDegs, RNAseqDegs_limma, and RNAseqDegs_DESeq.
 #'                  GSEA is applied to each comparison 
-#' @param ntop: the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)
-#' @param nameFile: file name to save the GSEA results (default: NULL, no output to a file). 
+#' @param ntop the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)
+#' @param nameFile file name to save the GSEA results (default: NULL, no output to a file). 
 #'                  The saved results can be reused later to adjust the TF selection parameters
 #' @return a list of results: 
 #'         GSEArslt: a dataframe of GSEA results (see TF_GSEA).
@@ -275,11 +275,10 @@ TF_Selection = function(GSDB, DErslt, minSize=5, nperm = 5000, method = "binary"
 }
 
 #' Reselecting TFs using gene set enrichement analysis (GSEA) using an adjusted set of parameters (work together with TF_Selection)
-#' @param GSEArslt: GSEA results from TF_Selection
-#' @param DErslt: DEG results
-#' @param qval: q-value cutoff (default: 0.05)
-#' @param combine_TFs: whether combine selected TFs from multiple comparisons or not (default: TRUE)
-#' @param ntop: the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)
+#' @param GSEArslt GSEA results from TF_Selection
+#' @param qval q-value cutoff (default: 0.05)
+#' @param combine_TFs whether combine selected TFs from multiple comparisons or not (default: TRUE)
+#' @param ntop the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)
 #' @return tfs: a vector of selected TFs
 #' @export
 Reselect_TFs = function(GSEArslt, qval = 0.05, combine_TFs = TRUE, ntop = NULL) {

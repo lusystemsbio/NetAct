@@ -17,30 +17,30 @@ TF_Selection(
 )
 }
 \arguments{
-\item{GSDB:}{gene set database (a list of gene sets, each of which is comprised of a vector genes)}
+\item{GSDB}{gene set database (a list of gene sets, each of which is comprised of a vector genes)}
 
-\item{DErslt:}{DEG results}
+\item{DErslt}{DEG results}
 
-\item{minSize:}{the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)}
+\item{minSize}{the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)}
 
-\item{nperm:}{the number of gene list permutations (default: 1000)}
+\item{nperm}{the number of gene list permutations (default: 1000)}
 
-\item{method:}{fast: fgsea; R: r implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed}
+\item{method}{fast: fgsea; R: r implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed}
 
-\item{qval:}{q-value cutoff (default: 0.05)}
+\item{qval}{q-value cutoff (default: 0.05)}
 
-\item{compList:}{a vector of comparisons, it needs to be consistent with DErslt from MicroDegs, RNAseqDegs_limma, and RNAseqDegs_DESeq.
+\item{compList}{a vector of comparisons, it needs to be consistent with DErslt from MicroDegs, RNAseqDegs_limma, and RNAseqDegs_DESeq.
 GSEA is applied to each comparison}
 
-\item{ntop:}{the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)}
+\item{ntop}{the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)}
 
-\item{nameFile:}{file name to save the GSEA results (default: NULL, no output to a file). 
+\item{nameFile}{file name to save the GSEA results (default: NULL, no output to a file).
 The saved results can be reused later to adjust the TF selection parameters}
 }
 \value{
-a list of results: 
-        GSEArslt: a dataframe of GSEA results (see TF_GSEA).
-        tfs: a vector of selected TFs.
+a list of results:
+GSEArslt: a dataframe of GSEA results (see TF_GSEA).
+tfs: a vector of selected TFs.
 }
 \description{
 Identifying enriched TFs using Gene Set Enrichment Analysis (GSEA) -- a wrapper function with many options

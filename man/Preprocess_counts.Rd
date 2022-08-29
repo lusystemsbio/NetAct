@@ -7,16 +7,16 @@
 Preprocess_counts(counts, groups, mouse = FALSE)
 }
 \arguments{
-\item{counts:}{raw count matrix}
+\item{counts}{raw count matrix}
 
-\item{groups:}{group information for experimental conditions}
+\item{groups}{group information for experimental conditions}
 
-\item{mouse:}{use mouse genome or not (default: FALSE)}
+\item{mouse}{use mouse genome or not (default: FALSE)}
 }
 \value{
 x$counts: processed count matrix
 }
 \description{
-NetAct uses edgeR to load the count data and the group information for experimental conditions, 
-             It also coverts gene symbols and remove duplicates.
+NetAct uses edgeR to load the count data and the group information for experimental conditions,
+It also coverts gene symbols and remove duplicates.
 }

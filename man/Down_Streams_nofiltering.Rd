@@ -14,17 +14,17 @@ Down_Streams_nofiltering(
 )
 }
 \arguments{
-\item{gs_str:}{Vector. A list of gene set names (TFs)}
+\item{gs_str}{Vector. A list of gene set names (TFs)}
 
-\item{gs_db:}{List of list. Gene set data base}
+\item{gs_db}{List of list. Gene set data base}
 
-\item{eset:}{ExpressionSet of gene expression data}
+\item{eset}{ExpressionSet of gene expression data}
 
-\item{cellwidth:}{plot width (default 4)}
+\item{cellwidth}{plot width (default 4)}
 
-\item{cellheight:}{plot height (default 4)}
+\item{cellheight}{plot height (default 4)}
 
-\item{showname:}{show colnames and rownames (default TRUE)}
+\item{showname}{show colnames and rownames (default TRUE)}
 }
 \value{
 List: gene grouping scheme

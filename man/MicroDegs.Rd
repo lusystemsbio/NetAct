@@ -7,19 +7,19 @@
 MicroDegs(eset, compList, qval = 0.05)
 }
 \arguments{
-\item{eset:}{Processed gene expression data in the ExpressionSet format
+\item{eset}{Processed gene expression data in the ExpressionSet format
 batch & experimental conditions are provided in pData.}
 
-\item{compList:}{a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))}
+\item{compList}{a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))}
 
-\item{qval:}{q-value cutoff for DEG analysis (default: 0.05)}
+\item{qval}{q-value cutoff for DEG analysis (default: 0.05)}
 }
 \value{
 DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison.
-        Each DEG result is in the format of A list containing:
-        table: table of DEG results.
-        rank_vector: a vector of t-statistics for every gene.
-        degs: a vector of gene symbols for DEGs.
+Each DEG result is in the format of A list containing:
+table: table of DEG results.
+rank_vector: a vector of t-statistics for every gene.
+degs: a vector of gene symbols for DEGs.
 }
 \description{
 Helper Function For DEG Analysis of microArray Data (for all cases, including single and multiple comparisons)

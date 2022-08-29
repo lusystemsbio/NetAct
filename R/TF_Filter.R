@@ -64,6 +64,7 @@ calculateMI <- function(actMat = actMat, nbins=16){
 #' Whether to apply the data processing
 #' inequality to remove weak edges from triangles. 
 #' @param nameFile character (optional). Ouput file name. Default NULL (no file output). 
+#' @param ... two additional parameters passed from applyDPI (default: miDiff = 0, minMiTh = 0.5)
 #' @return data.frame. Contains the interactions in a dataframe listing.
 #' source tf, target tf and interaction type (1-activation, 2-inhibition).  
 #' @import reshape2
@@ -221,6 +222,7 @@ getAdjacencyMat <- function(tfLinks = tfLinks){
 #' @param GSDB List of list. Gene set database of interactions
 #' @param genes vector. a vector of gene symbols of genes of interest
 #' @param DEgenes vector. a vector of gene symbols of DE genes 
+#' @param exp_data matrix. gene expression data
 #' @param miTh numeric. Mutual information threshold 
 #' @param maxTf integer (optional). Default 75. Maximum number of transcription 
 #' factors in the network. If \code{removeSignalling} is \code{TRUE} 
@@ -237,6 +239,7 @@ getAdjacencyMat <- function(tfLinks = tfLinks){
 #' @param DPI logical (optional). Default FALSE. 
 #' Whether to apply the data processing
 #' inequality to remove weak edges from triangles. 
+#' @param ... two additional parameters passed from applyDPI (default: miDiff = 0, minMiTh = 0.5)
 #' @return List of data.frame. Contains the interactions in a data frame listing.
 #' source tf, target tf and interaction type (1-activation, 2-inhibition).  
 #'        tf_links: network interactions.

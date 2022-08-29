@@ -7,7 +7,7 @@
 rem_data(x)
 }
 \arguments{
-\item{x:}{gene expression matrix}
+\item{x}{gene expression matrix}
 }
 \value{
 x: gene expression matrix without containing non-informative genes

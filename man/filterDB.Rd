@@ -7,11 +7,11 @@
 filterDB(GSDB, geneList, minSize = 5)
 }
 \arguments{
-\item{GSDB:}{list of list. gene set database}
+\item{GSDB}{list of list. gene set database}
 
-\item{geneList:}{a vector of available genes}
+\item{geneList}{a vector of available genes}
 
-\item{minSize:}{minimum number of genes of a gene set (default: 5)}
+\item{minSize}{minimum number of genes of a gene set (default: 5)}
 }
 \value{
 DB: list of list. filtered gene set database

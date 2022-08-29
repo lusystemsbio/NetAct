@@ -16,26 +16,26 @@ cal_activity(
 )
 }
 \arguments{
-\item{gs_remain:}{a vector of target genes after filtering}
+\item{gs_remain}{a vector of target genes after filtering}
 
-\item{tmp_data:}{gene expression of target genes}
+\item{tmp_data}{gene expression of target genes}
 
-\item{tmp_sign:}{sign of target genes (+1 for one group, -1 for the other)}
+\item{tmp_sign}{sign of target genes (+1 for one group, -1 for the other)}
 
-\item{ind:}{Hill coefficient parameter used in the weighting factors (default: 1/5, recommend to use 0 < ind < 1/4)}
+\item{ind}{Hill coefficient parameter used in the weighting factors (default: 1/5, recommend to use 0 < ind < 1/4)}
 
-\item{with_weight:}{whether weighting factors (based on DEG p-values) are used to compute TF activity (default: TRUE)}
+\item{with_weight}{whether weighting factors (based on DEG p-values) are used to compute TF activity (default: TRUE)}
 
-\item{DE_weights:}{a vector of the input for computing DE weighting factors (typically, adjusted p-values from DEG analysis)}
+\item{DE_weights}{a vector of the input for computing DE weighting factors (typically, adjusted p-values from DEG analysis)}
 
-\item{tf_exprs:}{a vector of gene expression of the TF}
+\item{tf_exprs}{a vector of gene expression of the TF}
 
-\item{useCorSign:}{allow the option to use the TF gene expression correlation to flip signs (default: TRUE)}
+\item{useCorSign}{allow the option to use the TF gene expression correlation to flip signs (default: TRUE)}
 }
 \value{
-a list of results: 
-        activity: matrix of TF activity.
-        sign: grouping scheme of all TF gene sets.
+a list of results:
+activity: matrix of TF activity.
+sign: grouping scheme of all TF gene sets.
 }
 \description{
 The core function to compute the activity profile of an TF

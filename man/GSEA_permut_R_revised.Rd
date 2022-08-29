@@ -7,19 +7,19 @@
 GSEA_permut_R_revised(sim_all, gene_set, stats_vector, N)
 }
 \arguments{
-\item{sim_all:}{a vector of genes in the expression data}
+\item{sim_all}{a vector of genes in the expression data}
 
-\item{gene_set:}{a vector of genes in the gene set}
+\item{gene_set}{a vector of genes in the gene set}
 
-\item{stats_vector:}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
+\item{stats_vector}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
 
-\item{N:}{total number of genes (size of sim_all)}
+\item{N}{total number of genes (size of sim_all)}
 }
 \value{
 ES: enrichment score
 }
 \description{
-To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
-             Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
-             This function becomes unused in NetAct, as a much faster c++ implementation (GSEA_permute) is provided.
+To improve computational efficiency, we devised a new permutation approach by swapping stats_vector.
+Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+This function becomes unused in NetAct, as a much faster c++ implementation (GSEA_permute) is provided.
 }

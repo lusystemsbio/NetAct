@@ -7,7 +7,7 @@
 row_norm(data)
 }
 \arguments{
-\item{data:}{gene expression matrix}
+\item{data}{gene expression matrix}
 }
 \value{
 norm_data: standardized gene expression matrix

@@ -16,26 +16,26 @@ TF_Activity(
 )
 }
 \arguments{
-\item{tfs:}{a vector of selected tfs}
+\item{tfs}{a vector of selected tfs}
 
-\item{GSDB:}{gene set database (a list of gene sets, each of which is comprised of a vector genes)}
+\item{GSDB}{gene set database (a list of gene sets, each of which is comprised of a vector genes)}
 
-\item{eset:}{expression set of gene expression data}
+\item{eset}{expression set of gene expression data}
 
-\item{DErslt:}{DEG results}
+\item{DErslt}{DEG results}
 
-\item{with_weight:}{whether weighting factors (based on DEG p-values) are used to compute TF activity (default: TRUE)}
+\item{with_weight}{whether weighting factors (based on DEG p-values) are used to compute TF activity (default: TRUE)}
 
-\item{if_module:}{whether the grouping scheme (activation or inhibition) depends on module detection algorithm (default: FALSE, no need to change)}
+\item{if_module}{whether the grouping scheme (activation or inhibition) depends on module detection algorithm (default: FALSE, no need to change)}
 
-\item{ind:}{Hill coefficient parameter used in the weighting factors (default: 1/5, recommend to use 0 < ind < 1/4)}
+\item{ind}{Hill coefficient parameter used in the weighting factors (default: 1/5, recommend to use 0 < ind < 1/4)}
 
-\item{useCorSign:}{allow the option to use the TF gene expression correlation to flip signs (default: TRUE)}
+\item{useCorSign}{allow the option to use the TF gene expression correlation to flip signs (default: TRUE)}
 }
 \value{
-a list of results: 
-        all_list: grouping scheme of all TF gene sets.
-        all_activity: matrix of TF activity.
+a list of results:
+all_list: grouping scheme of all TF gene sets.
+all_activity: matrix of TF activity.
 }
 \description{
 Inference of TF activity

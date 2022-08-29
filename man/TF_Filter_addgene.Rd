@@ -30,10 +30,12 @@ TF_Filter_addgene(
 
 \item{DEgenes}{vector. a vector of gene symbols of DE genes}
 
+\item{exp_data}{matrix. gene expression data}
+
 \item{miTh}{numeric. Mutual information threshold}
 
-\item{maxTf}{integer (optional). Default 75. Maximum number of transcription 
-factors in the network. If \code{removeSignalling} is \code{TRUE} 
+\item{maxTf}{integer (optional). Default 75. Maximum number of transcription
+factors in the network. If \code{removeSignalling} is \code{TRUE}
 the actual number will be less.}
 
 \item{maxInteractions}{integer (optional). Default 300. Maximum number of
@@ -47,23 +49,25 @@ interactions in the network.}
 mutual information to find possible interactions. Default FALSE}
 
 \item{removeSignalling}{logical (optional). Whether to remove the Tfs which
-are not the target of any other Tfs. Default FALSE. It is not recursive and 
+are not the target of any other Tfs. Default FALSE. It is not recursive and
 the generated network might still contain some signalling tfs.}
 
-\item{DPI}{logical (optional). Default FALSE. 
+\item{DPI}{logical (optional). Default FALSE.
 Whether to apply the data processing
 inequality to remove weak edges from triangles.}
+
+\item{...}{two additional parameters passed from applyDPI (default: miDiff = 0, minMiTh = 0.5)}
 }
 \value{
 List of data.frame. Contains the interactions in a data frame listing.
-source tf, target tf and interaction type (1-activation, 2-inhibition).  
-       tf_links: network interactions.
-       new_links: new interactions associated with the genes of interest.
+source tf, target tf and interaction type (1-activation, 2-inhibition).
+tf_links: network interactions.
+new_links: new interactions associated with the genes of interest.
 }
 \description{
 Network calculated using activity and interaction database. Uses
-mutual information to find possible interactions and keeps the interactions 
+mutual information to find possible interactions and keeps the interactions
 if they are available in the database. Sign of interaction is assigned based
-on the correlation between the activities. An extension of TF_Filter. 
+on the correlation between the activities. An extension of TF_Filter.
 Add a list of genes of interest.
 }
