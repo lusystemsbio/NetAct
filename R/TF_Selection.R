@@ -188,7 +188,7 @@ GSEA_proc_RC = function(GSDB, DElist, minSize=5, nperm = 1000) {
 #' @param DErslt: DEG results
 #' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
 #' @param nperm: the number of gene list permutations (default: 1000)
-#' @param method: fast: fgsea; r: R implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed
+#' @param method: fast: fgsea; r: R implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed
 #' @return gseaRes: a table of GSEA results:
 #'         tf: TF (gene set name).
 #'         es: ES score.
@@ -220,7 +220,7 @@ TF_GSEA = function(GSDB, DErslt, minSize=5, nperm = 1000, method = "binary"){
 #' @param DErslt: DEG results
 #' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
 #' @param nperm: the number of gene list permutations (default: 1000)
-#' @param method: fast: fgsea; R: r implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed
+#' @param method: fast: fgsea; R: r implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed
 #' @param qval: q-value cutoff (default: 0.05)
 #' @param compList: a vector of comparisons, it needs to be consistent with DErslt from MicroDegs, RNAseqDegs_limma, and RNAseqDegs_DESeq.
 #'                  GSEA is applied to each comparison 

@@ -25,7 +25,7 @@ TF_Selection(
 
 \item{nperm:}{the number of gene list permutations (default: 1000)}
 
-\item{method:}{fast: fgsea; R: r implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed}
+\item{method:}{fast: fgsea; R: r implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed}
 
 \item{qval:}{q-value cutoff (default: 0.05)}
 

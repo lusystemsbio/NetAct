@@ -15,7 +15,7 @@ TF_GSEA(GSDB, DErslt, minSize = 5, nperm = 1000, method = "binary")
 
 \item{nperm:}{the number of gene list permutations (default: 1000)}
 
-\item{method:}{fast: fgsea; r: R implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed}
+\item{method:}{fast: fgsea; r: R implementation of GSEA with a new permutation method; binary: R/C++ implementation for fast speed}
 }
 \value{
 gseaRes: a table of GSEA results:
