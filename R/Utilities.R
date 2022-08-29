@@ -155,11 +155,10 @@ Down_Streams_nofiltering = function(gs_str, gs_db, eset, cellwidth = 4, cellheig
 #' @param new_activity Matrix. TF activity matrix
 #' @param eset ExpressionSet of gene expression data
 #' @return Heatmap plotting object
-#' @import ComplexHeatmap
 #' @importFrom circlize colorRamp2
+#' @importFrom ComplexHeatmap Heatmap 
 #' @export
 Activity_heatmap = function(new_activity, eset){
-#    require(ComplexHeatmap)
 #    require(circlize)
     if (is(eset, "ExpressionSet")){
         data = exprs(eset)
