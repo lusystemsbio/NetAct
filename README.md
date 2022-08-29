@@ -25,4 +25,4 @@ install_github("lusystemsbio/NetAct", dependencies=T, build_vignettes = T)
 
 ### Tutorial:
 
-https://htmlpreview.github.io/?https://github.com/lusystemsbio/NetAct/blob/master/doc/Tutorial.html
+https://htmlpreview.github.io/?https://github.com/lusystemsbio/NetAct/blob/master/vignettes/Tutorial.html
