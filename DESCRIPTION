@@ -11,5 +11,8 @@ LazyData: true
 VignetteBuilder: knitr
 NeedsCompilation: yes
 LinkingTo: Rcpp
-Imports: Rcpp, Biobase, pheatmap, qvalue, fgsea, mclust, entropy, circlize, visNetwork, limma, Mus.musculus, Homo.sapiens, ComplexHeatmap, fastmatch
+Imports: Rcpp, edgeR, biomaRt, Biobase, pheatmap, qvalue, 
+         fgsea, mclust, entropy, circlize, visNetwork, limma,
+         Mus.musculus, Homo.sapiens, ComplexHeatmap, fastmatch, reshape2
+Suggests: R.utils
 RoxygenNote: 7.1.2

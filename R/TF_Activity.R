@@ -12,8 +12,8 @@
 #' @param ind: Hill coefficient parameter used in the weighting factors (default: 1/5, recommend to use 0 < ind < 1/4)
 #' @param useCorSign: allow the option to use the TF gene expression correlation to flip signs (default: TRUE)
 #' @return a list of results: 
-#'         all_list: grouping scheme of all TF gene sets
-#'         all_activity: matrix of TF activity
+#'         all_list: grouping scheme of all TF gene sets.
+#'         all_activity: matrix of TF activity.
 #' @export
 TF_Activity = function (tfs, GSDB, eset, DErslt, with_weight = TRUE, if_module = FALSE,
                           ind = 1/5, useCorSign = TRUE){
@@ -134,8 +134,8 @@ TF_Activity = function (tfs, GSDB, eset, DErslt, with_weight = TRUE, if_module =
 #' @param tf_exprs: a vector of gene expression of the TF
 #' @param useCorSign: allow the option to use the TF gene expression correlation to flip signs (default: TRUE)
 #' @return a list of results: 
-#'         activity: matrix of TF activity
-#'         sign: grouping scheme of all TF gene sets
+#'         activity: matrix of TF activity.
+#'         sign: grouping scheme of all TF gene sets.
 cal_activity = function (gs_remain, tmp_data, tmp_sign, ind, with_weight, DE_weights, tf_exprs, useCorSign = useCorSign) {
     if(length(gs_remain) == 1) {
         tmp_activity = as.vector(scale(tmp_data[gs_remain,]))  # by default it's a matrix

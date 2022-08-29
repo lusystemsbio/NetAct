@@ -25,7 +25,7 @@ TF_Selection(
 
 \item{nperm:}{the number of gene list permutations (default: 1000)}
 
-\item{method:}{fast: fgsea; R: R implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed}
+\item{method:}{fast: fgsea; R: r implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed}
 
 \item{qval:}{q-value cutoff (default: 0.05)}
 
@@ -39,8 +39,8 @@ The saved results can be reused later to adjust the TF selection parameters}
 }
 \value{
 a list of results: 
-        GSEArslt: a dataframe of GSEA results (see TF_GSEA)
-        tfs: a vector of selected TFs
+        GSEArslt: a dataframe of GSEA results (see TF_GSEA).
+        tfs: a vector of selected TFs.
 }
 \description{
 Identifying enriched TFs using Gene Set Enrichment Analysis (GSEA) -- a wrapper function with many options

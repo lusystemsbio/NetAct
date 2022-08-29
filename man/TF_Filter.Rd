@@ -51,7 +51,7 @@ inequality to remove weak edges from triangles.}
 \item{nameFile}{character (optional). Ouput file name. Default NULL (no file output).}
 }
 \value{
-data.frame. Contains the interactions in a dataframe listing 
+data.frame. Contains the interactions in a dataframe listing.
 source tf, target tf and interaction type (1-activation, 2-inhibition).
 }
 \description{

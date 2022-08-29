@@ -18,13 +18,13 @@ RNAseqDegs_limma(counts, phenodata, complist, lfc, qval = 0.05)
 \item{qval:}{q-value cutoff for DEG analysis (default: 0.05)}
 }
 \value{
-DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison
+DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison.
         Each DEG result is in the format of A list containing:
-        table: table of DEG results
-        rank_vector: a vector of t-statistics for every gene
-        degs: a vector of gene symbols for DEGs
-        e: expression data (CPM)
-        e_batch: batch corrected expression
+        table: table of DEG results.
+        rank_vector: a vector of t-statistics for every gene.
+        degs: a vector of gene symbols for DEGs.
+        e: expression data (CPM).
+        e_batch: batch corrected expression.
 }
 \description{
 Helper Function For DEG Analysis of RNA-seq Data using limma + Voom

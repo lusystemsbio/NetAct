@@ -34,8 +34,8 @@ TF_Activity(
 }
 \value{
 a list of results: 
-        all_list: grouping scheme of all TF gene sets
-        all_activity: matrix of TF activity
+        all_list: grouping scheme of all TF gene sets.
+        all_activity: matrix of TF activity.
 }
 \description{
 Inference of TF activity

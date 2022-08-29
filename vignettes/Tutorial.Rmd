@@ -26,18 +26,19 @@ NetAct is a computational platform that uses both transcriptomic data and litera
 The analysis begins by downloading text files that contain raw gene-level counts for each sample. The file GSE63310_RAW.tar is available online at http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63310&format=file. 
 
 ```{r }
-library(edgeR)
 library(NetAct)
-library(sRACIPE)
+library(edgeR)
+require(R.utils)
 
 url <- "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63310&format=file"
-utils::download.file(url, destfile="GSE63310_RAW.tar", mode="wb") 
-utils::untar("GSE63310_RAW.tar", exdir = ".")
+download.file(url, destfile="GSE63310_RAW.tar", mode="wb") 
+untar("GSE63310_RAW.tar", exdir = ".")
 files <- c("GSM1545535_10_6_5_11.txt", "GSM1545536_9_6_5_11.txt", "GSM1545538_purep53.txt",
            "GSM1545539_JMS8-2.txt", "GSM1545540_JMS8-3.txt", "GSM1545541_JMS8-4.txt",
            "GSM1545542_JMS8-5.txt", "GSM1545544_JMS9-P7c.txt", "GSM1545545_JMS9-P8c.txt")
-for(i in paste(files, ".gz", sep=""))
-  R.utils::gunzip(i, overwrite=TRUE)
+for(i in paste(files, ".gz", sep="")){
+  gunzip(i, overwrite=TRUE)
+}
 
 files <- c("GSM1545535_10_6_5_11.txt", "GSM1545536_9_6_5_11.txt", 
            "GSM1545538_purep53.txt", "GSM1545539_JMS8-2.txt", 
@@ -66,8 +67,7 @@ rownames(phenoData) = colnames(x$counts)
 
 Fro RNA-seq data, NetAct provides a useful pre-processing function called ```preprocess_counts()``` that filters out lowly expressed genes and retrieves associated gene symbols for raw count data. Differentially expressed genes (DEGs) are then identified using the limma package. The resultant normalized expression data is saved alongside the *phenoData* metadata into the standard ```ExpressionSet``` object for downstream analysis. 
 
-```{r }
-library(Mus.musculus)
+```{r}
 counts <- Preprocess_counts(counts = x$counts, groups = group, mouse = TRUE)
 DErslt = RNAseqDegs_limma(counts = counts, phenodata = phenoData, 
                           complist = compList, qval = 0.05)
@@ -125,6 +125,7 @@ tf_links = TF_Filter(acts_mat, mDB, miTh = .05, nbins = 8, corMethod = "spearman
 We then use the algorithm RACIPE to model the dynamical behavior of the network we constructed. It is recommended to simulate 10,000 models.  
 
 ```{r }
+library(sRACIPE)
 racipe_results <- sracipeSimulate(circuit = tf_links, numModels = 200, plots = TRUE)
 ```
 

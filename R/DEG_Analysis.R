@@ -3,7 +3,7 @@
 ##################################################################
 
 #' @title RNA-seq data pre processing
-#' @description Netact uses edgeR to load the count data and the group information for experimental conditions, 
+#' @description NetAct uses edgeR to load the count data and the group information for experimental conditions, 
 #'              It also coverts gene symbols and remove duplicates.
 #' @param counts: raw count matrix
 #' @param groups: group information for experimental conditions
@@ -13,11 +13,12 @@
 #' @import edgeR
 #' @import Mus.musculus
 #' @import Homo.sapiens
+#' @import biomaRt
 Preprocess_counts <- function(counts, groups, mouse = FALSE) {
-  #  require(edgeR)
-  #  require(Mus.musculus)
-  #  require(Homo.sapiens)
-  #  Create DGEList and Filter
+#  require(edgeR)
+   require(Mus.musculus)
+#  require(Homo.sapiens)
+#  Create DGEList and Filter
   x <- DGEList(counts, group = groups)
   
   #  Gene Annotations and Filter Duplicate Symbols
@@ -30,9 +31,9 @@ Preprocess_counts <- function(counts, groups, mouse = FALSE) {
   }
   
   if (mouse == TRUE) {
-    genes <- biomaRt::select(Mus.musculus, keys = geneid, columns = c("SYMBOL", "TXCHROM"), keytype = keytype)
+    genes <- biomaRt::select(Mus.musculus::Mus.musculus, keys = geneid, columns = c("SYMBOL", "TXCHROM"), keytype = keytype)
   } else {
-    genes <- biomaRt::select(Homo.sapiens, keys = geneid, columns = c("SYMBOL", "TXCHROM"), keytype = keytype)
+    genes <- biomaRt::select(Homo.sapiens::Homo.sapiens, keys = geneid, columns = c("SYMBOL", "TXCHROM"), keytype = keytype)
   }
   
   genes <- genes[-which(duplicated(genes[keytype])),]
@@ -55,9 +56,9 @@ Preprocess_counts <- function(counts, groups, mouse = FALSE) {
 #'              batch & experimental conditions are provided in pData. 
 #' @param qval: q-value cutoff for DEG analysis (default: 0.05)
 #' @return DEG result in the format of a list containing:
-#'         table: table of DEG results
-#'         rank_vector: a vector of t-statistics for every gene
-#'         degs: a vector of gene symbols for DEGs
+#'         table: table of DEG results.
+#'         rank_vector: a vector of t-statistics for every gene.
+#'         degs: a vector of gene symbols for DEGs.
 #' @import edgeR
 #' @import limma
 DEG_Analysis_Micro <- function(eset, qval = 0.05) {
@@ -85,11 +86,11 @@ DEG_Analysis_Micro <- function(eset, qval = 0.05) {
 #'              batch & experimental conditions are provided in pData. 
 #' @param compList: a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
 #' @param qval: q-value cutoff for DEG analysis (default: 0.05)
-#' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison
+#' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison.
 #'         Each DEG result is in the format of A list containing:
-#'         table: table of DEG results
-#'         rank_vector: a vector of t-statistics for every gene
-#'         degs: a vector of gene symbols for DEGs
+#'         table: table of DEG results.
+#'         rank_vector: a vector of t-statistics for every gene.
+#'         degs: a vector of gene symbols for DEGs.
 #' @export
 #' @import edgeR
 #' @import limma
@@ -159,13 +160,13 @@ MicroDegs = function(eset, compList, qval = 0.05) {
 #' @param complist: a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
 #' @param lfc: (optional) log fold change constraints for DEGs
 #' @param qval: q-value cutoff for DEG analysis (default: 0.05)
-#' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison
+#' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison.
 #'         Each DEG result is in the format of A list containing:
-#'         table: table of DEG results
-#'         rank_vector: a vector of t-statistics for every gene
-#'         degs: a vector of gene symbols for DEGs
-#'         e: expression data (CPM)
-#'         e_batch: batch corrected expression
+#'         table: table of DEG results.
+#'         rank_vector: a vector of t-statistics for every gene.
+#'         degs: a vector of gene symbols for DEGs.
+#'         e: expression data (CPM).
+#'         e_batch: batch corrected expression.
 #' @export
 #' @import edgeR
 #' @import limma
@@ -271,12 +272,12 @@ RNAseqDegs_limma = function(counts, phenodata, complist, lfc, qval = 0.05) {
 #' @param phenodata: pData that provides batch & experimental conditions
 #' @param compList: a vector of multiple comparisons in the format of contrasts in limma (e.g. c("A-B", "A-C", "B-C"))
 #' @param qval: q-value cutoff for DEG analysis (default: 0.05)
-#' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison
+#' @return DEresult: a list of DEG results, including those for each single comparison and those for the overall comparison.
 #'         Each DEG result is in the format of A list containing:
-#'         table: table of DEG results
-#'         rank_vector: a vector of t-statistics for every gene
-#'         degs: a vector of gene symbols for DEGs
-#'         e: expression data (CPM)
+#'         table: table of DEG results.
+#'         rank_vector: a vector of t-statistics for every gene.
+#'         degs: a vector of gene symbols for DEGs.
+#'         e: expression data (CPM).
 #' @export
 #' @import DESeq2
 RNAseqDegs_DESeq = function(counts, phenodata, complist, qval = 0.05) {

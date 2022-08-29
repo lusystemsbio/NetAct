@@ -7,7 +7,8 @@
 #' @param gene_set: a vector of genes in the gene set
 #' @param stats_vector: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
 #' @return ES: enrichment score
-GSEA = function(gene_list, gene_set, stats_vector){
+#' @export
+GSEA_score = function(gene_list, gene_set, stats_vector){
   # Input genelist must be ordered.
   tag_indicator = sign(fmatch(gene_list, gene_set, nomatch = 0))
   no_tag_indicator = 1- tag_indicator
@@ -73,7 +74,7 @@ GSEA_permut_R_revised = function(sim_all, gene_set, stats_vector, N){
 #' @param stats_vector: a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
 #' @return tmp_sim_sgeas: a vector of ES values for all permutated gene lists
 GSEA_permut_R = function(sim_all, gs, stats_vector){
-  tmp_sim_gseas = unlist(lapply(sim_all, function(x) GSEA(x, gs, stats_vector)))
+  tmp_sim_gseas = unlist(lapply(sim_all, function(x) GSEA_score(x, gs, stats_vector)))
   return(tmp_sim_gseas)
 }
 
@@ -104,12 +105,12 @@ nm_pval=function(permutated_vector){
 #' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
 #' @param nperm: the number of gene list permutations (default: 1000)
 #' @return data.frame(rslt_mat): a table of GSEA results:
-#'         tf: TF (gene set name)
-#'         es: ES score
-#'         lens: number of overlapping genes in each gene set
-#'         pvals: p-value by counting
-#'         z: z-score
-#'         qvals: q-value from pvals
+#'         tf: TF (gene set name).
+#'         es: ES score.
+#'         lens: number of overlapping genes in each gene set.
+#'         pvals: p-value by counting.
+#'         z: z-score.
+#'         qvals: q-value from pvals.
 #' @import qvalue 
 #' @export
 GSEA_proc_R = function(GSDB, DElist, minSize=5, nperm = 1000){
@@ -146,12 +147,12 @@ GSEA_proc_R = function(GSDB, DElist, minSize=5, nperm = 1000){
 #' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
 #' @param nperm: the number of gene list permutations (default: 1000)
 #' @return data.frame(rslt_mat): a table of GSEA results:
-#'         tf: TF (gene set name)
-#'         es: ES score
-#'         lens: number of overlapping genes in each gene set
-#'         pvals: p-value by counting
-#'         z: z-score
-#'         qvals: q-value from pvals
+#'         tf: TF (gene set name).
+#'         es: ES score.
+#'         lens: number of overlapping genes in each gene set.
+#'         pvals: p-value by counting.
+#'         z: z-score.
+#'         qvals: q-value from pvals.
 #' @import Rcpp
 #' @import qvalue 
 #' @import fastmatch
@@ -163,11 +164,11 @@ GSEA_proc_RC = function(GSDB, DElist, minSize=5, nperm = 1000) {
   lens = sapply(GSDB, length)
   ids = which(lens >= minSize)
   GSDB = GSDB[ids]
-  gsea_rslt = do.call(rbind, lapply(GSDB, NetAct::GSEA, gene_list = gene_list, stats_vector= stats_vector))
+  gsea_rslt = do.call(rbind, lapply(GSDB, GSEA_score, gene_list = gene_list, stats_vector= stats_vector))
   # Index the GS
   GSDB = (lapply(GSDB, function(x) fmatch(x, gene_list, nomatch = 0)))
   message("start calculating ......")
-  sim_rslt = NetAct::GSEA_permute(GSDB = GSDB, stats_vector = stats_vector, nperm = nperm)
+  sim_rslt = GSEA_permute(GSDB = GSDB, stats_vector = stats_vector, nperm = nperm)
   message("calculations finished !!!!!!")
   sim_rslt = cbind(gsea_rslt, sim_rslt)
   pvals = apply(sim_rslt, 1, function(x) sum(x[1] < x)/ nperm)
@@ -187,14 +188,14 @@ GSEA_proc_RC = function(GSDB, DElist, minSize=5, nperm = 1000) {
 #' @param DErslt: DEG results
 #' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
 #' @param nperm: the number of gene list permutations (default: 1000)
-#' @param method: fast: fgsea; R: R implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed
+#' @param method: fast: fgsea; r: R implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed
 #' @return gseaRes: a table of GSEA results:
-#'         tf: TF (gene set name)
-#'         es: ES score
-#'         lens: number of overlapping genes in each gene set
-#'         pvals: p-value by counting
-#'         z: z-score
-#'         qvals: q-value from pvals
+#'         tf: TF (gene set name).
+#'         es: ES score.
+#'         lens: number of overlapping genes in each gene set.
+#'         pvals: p-value by counting.
+#'         z: z-score.
+#'         qvals: q-value from pvals.
 #' @import fgsea
 #' @import qvalue 
 #' @export
@@ -219,7 +220,7 @@ TF_GSEA = function(GSDB, DErslt, minSize=5, nperm = 1000, method = "binary"){
 #' @param DErslt: DEG results
 #' @param minSize: the minimum number of overlapping genes required for each gene set (a gene set filtering parameter, default: 5)
 #' @param nperm: the number of gene list permutations (default: 1000)
-#' @param method: fast: fgsea; R: R implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed
+#' @param method: fast: fgsea; R: r implementation of GSEA with a new permutation method; RC: R/C++ implementation for fast speed
 #' @param qval: q-value cutoff (default: 0.05)
 #' @param compList: a vector of comparisons, it needs to be consistent with DErslt from MicroDegs, RNAseqDegs_limma, and RNAseqDegs_DESeq.
 #'                  GSEA is applied to each comparison 
@@ -227,8 +228,8 @@ TF_GSEA = function(GSDB, DErslt, minSize=5, nperm = 1000, method = "binary"){
 #' @param nameFile: file name to save the GSEA results (default: NULL, no output to a file). 
 #'                  The saved results can be reused later to adjust the TF selection parameters
 #' @return a list of results: 
-#'         GSEArslt: a dataframe of GSEA results (see TF_GSEA)
-#'         tfs: a vector of selected TFs
+#'         GSEArslt: a dataframe of GSEA results (see TF_GSEA).
+#'         tfs: a vector of selected TFs.
 #' @export
 TF_Selection = function(GSDB, DErslt, minSize=5, nperm = 5000, method = "binary", qval = 0.05, 
                         compList = NULL, ntop = NULL, nameFile = NULL) {

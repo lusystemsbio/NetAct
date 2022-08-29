@@ -55,10 +55,10 @@ Whether to apply the data processing
 inequality to remove weak edges from triangles.}
 }
 \value{
-List of data.frame. Contains the interactions in a data frame listing 
+List of data.frame. Contains the interactions in a data frame listing.
 source tf, target tf and interaction type (1-activation, 2-inhibition).  
-       tf_links: network interactions
-       new_links: new interactions associated with the genes of interest
+       tf_links: network interactions.
+       new_links: new interactions associated with the genes of interest.
 }
 \description{
 Network calculated using activity and interaction database. Uses

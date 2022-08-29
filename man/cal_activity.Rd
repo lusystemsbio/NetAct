@@ -34,8 +34,8 @@ cal_activity(
 }
 \value{
 a list of results: 
-        activity: matrix of TF activity
-        sign: grouping scheme of all TF gene sets
+        activity: matrix of TF activity.
+        sign: grouping scheme of all TF gene sets.
 }
 \description{
 The core function to compute the activity profile of an TF

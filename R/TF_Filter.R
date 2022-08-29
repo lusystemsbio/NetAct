@@ -31,8 +31,8 @@ calculateMI <- function(actMat = actMat, nbins=16){
   {
     for(j in (i+1):(nGenes))
     {
-      temp <- entropy::discretize2d(actMat[i,],actMat[j,],nbins,nbins)
-      miMat[i, j] <- entropy::mi.shrink(temp,verbose = F)
+      temp <- discretize2d(actMat[i,],actMat[j,],nbins,nbins)
+      miMat[i, j] <- mi.shrink(temp,verbose = F)
       miMat[j, i] <- miMat[i, j]
     }
   }
@@ -64,8 +64,9 @@ calculateMI <- function(actMat = actMat, nbins=16){
 #' Whether to apply the data processing
 #' inequality to remove weak edges from triangles. 
 #' @param nameFile character (optional). Ouput file name. Default NULL (no file output). 
-#' @return data.frame. Contains the interactions in a dataframe listing 
+#' @return data.frame. Contains the interactions in a dataframe listing.
 #' source tf, target tf and interaction type (1-activation, 2-inhibition).  
+#' @import reshape2
 #' @export
 TF_Filter = function(actMat, GSDB, miTh = 0.4, maxTf = 75, 
                      maxInteractions = 300,  
@@ -236,10 +237,10 @@ getAdjacencyMat <- function(tfLinks = tfLinks){
 #' @param DPI logical (optional). Default FALSE. 
 #' Whether to apply the data processing
 #' inequality to remove weak edges from triangles. 
-#' @return List of data.frame. Contains the interactions in a data frame listing 
+#' @return List of data.frame. Contains the interactions in a data frame listing.
 #' source tf, target tf and interaction type (1-activation, 2-inhibition).  
-#'        tf_links: network interactions
-#'        new_links: new interactions associated with the genes of interest
+#'        tf_links: network interactions.
+#'        new_links: new interactions associated with the genes of interest.
 #' @export
 TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, exp_data, miTh = 0.4, maxTf = 75, 
                        maxInteractions = 300,  
