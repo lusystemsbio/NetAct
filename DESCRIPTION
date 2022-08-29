@@ -13,7 +13,7 @@ NeedsCompilation: yes
 LinkingTo: Rcpp
 Imports: Rcpp, edgeR, biomaRt, Biobase, qvalue, fgsea, reshape2,
          mclust, entropy, circlize, visNetwork, limma, fastmatch,
-         Mus.musculus, Homo.sapiens, ComplexHeatmap, pheatmap 
+         Mus.musculus, Homo.sapiens, ComplexHeatmap, pheatmap, methods 
 Suggests: R.utils, knitr, sRACIPE
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2

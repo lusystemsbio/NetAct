@@ -18,6 +18,7 @@ importFrom(circlize, colorRamp2)
 importFrom(grDevices, colorRampPalette)
 importFrom(stats, complete.cases, cor, kmeans, model.matrix, pnorm, sd)
 importFrom(utils, write.csv)
+importFrom(methods, as, is, new)
 
 export(
     Preprocess_counts,
