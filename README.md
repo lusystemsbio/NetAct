@@ -26,3 +26,11 @@ install_github("lusystemsbio/NetAct", dependencies=T, build_vignettes = T)
 ### Tutorial:
 
 https://htmlpreview.github.io/?https://github.com/lusystemsbio/NetAct/blob/master/vignettes/Tutorial.html
+
+### Manual:
+
+https://github.com/lusystemsbio/NetAct/blob/master/NetAct_1.0.5.pdf
+
+### Reference:
+
+Kenong Su, Ataur Katebi, Vivek Kohar, Benjamin Clauss, Danya Gordin, Zhaohui S. Qin, R. Krishna M. Karuturi, Sheng Li, Mingyang Lu. NetAct: a computational platform to construct core transcription factor regulatory networks using gene activity. bioRxiv 2022.05.06.487898; doi: https://doi.org/10.1101/2022.05.06.487898
