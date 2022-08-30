@@ -29,7 +29,7 @@ https://htmlpreview.github.io/?https://github.com/lusystemsbio/NetAct/blob/maste
 
 ### Manual:
 
-https://github.com/lusystemsbio/NetAct/blob/master/NetAct_1.0.5.pdf
+https://github.com/lusystemsbio/NetAct/blob/master/vignettes/NetAct_1.0.5.pdf
 
 ### Reference:
 
