@@ -19,7 +19,7 @@ GSEA_permut_R_revised(sim_all, gene_set, stats_vector, N)
 ES: enrichment score
 }
 \description{
-To improve computational efficiency, we devised a new permutation approach by swapping stats_vector.
-Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
-This function becomes unused in NetAct, as a much faster c++ implementation (GSEA_permute) is provided.
+To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
+             Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+             This function becomes unused in NetAct, as a much faster c++ implementation (GSEA_permute) is provided.
 }

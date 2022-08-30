@@ -14,9 +14,9 @@ batch & experimental conditions are provided in pData.}
 }
 \value{
 DEG result in the format of a list containing:
-table: table of DEG results.
-rank_vector: a vector of t-statistics for every gene.
-degs: a vector of gene symbols for DEGs.
+        table: table of DEG results.
+        rank_vector: a vector of t-statistics for every gene.
+        degs: a vector of gene symbols for DEGs.
 }
 \description{
 Helper Function For DEG Analysis of microArray Data (for a single comparison)

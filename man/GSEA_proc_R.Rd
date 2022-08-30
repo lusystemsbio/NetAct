@@ -17,14 +17,14 @@ GSEA_proc_R(GSDB, DElist, minSize = 5, nperm = 1000)
 }
 \value{
 data.frame(rslt_mat): a table of GSEA results:
-tf: TF (gene set name).
-es: ES score.
-lens: number of overlapping genes in each gene set.
-pvals: p-value by counting.
-z: z-score.
-qvals: q-value from pvals.
+        tf: TF (gene set name).
+        es: ES score.
+        lens: number of overlapping genes in each gene set.
+        pvals: p-value by counting.
+        z: z-score.
+        qvals: q-value from pvals.
 }
 \description{
-To improve computational efficiency, we devised a new permutation approach by swapping stats_vector.
-Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
+             Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
 }

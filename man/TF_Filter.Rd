@@ -26,8 +26,8 @@ TF_Filter(
 
 \item{miTh}{numeric. Mutual information threshold}
 
-\item{maxTf}{integer (optional). Default 75. Maximum number of transcription
-factors in the network. If \code{removeSignalling} is \code{TRUE}
+\item{maxTf}{integer (optional). Default 75. Maximum number of transcription 
+factors in the network. If \code{removeSignalling} is \code{TRUE} 
 the actual number will be less.}
 
 \item{maxInteractions}{integer (optional). Default 300. Maximum number of
@@ -41,10 +41,10 @@ interactions in the network.}
 mutual information to find possible interactions.}
 
 \item{removeSignalling}{logical (optional). Whether to remove the Tfs which
-are not the target of any other Tfs. Default TRUE. It is not recursive and
+are not the target of any other Tfs. Default TRUE. It is not recursive and 
 the generated network might still contain some signalling tfs.}
 
-\item{DPI}{logical (optional). Default FALSE.
+\item{DPI}{logical (optional). Default FALSE. 
 Whether to apply the data processing
 inequality to remove weak edges from triangles.}
 
@@ -58,7 +58,7 @@ source tf, target tf and interaction type (1-activation, 2-inhibition).
 }
 \description{
 Network calculated using activity and interaction database. Uses
-mutual information to find possible interactions and keeps the interactions
+mutual information to find possible interactions and keeps the interactions 
 if they are available in the database. Sign of interaction is assigned based
 on the correlation between the activities.
 }

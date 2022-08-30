@@ -18,5 +18,5 @@ tmp_sim_sgeas: a vector of ES values for all permutated gene lists
 }
 \description{
 The function uses the original GSEA enrichment score calculation but using the new permutation method.
-Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
+             Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
 }

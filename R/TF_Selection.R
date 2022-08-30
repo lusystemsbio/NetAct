@@ -78,25 +78,6 @@ GSEA_permut_R = function(sim_all, gs, stats_vector){
   return(tmp_sim_gseas)
 }
 
-#' @title  Estimation of p-value for Gene Set Enrichment Analysis (GSEA) using a normal mixture model
-#' @description From the enrichment scores (ESs) of the original and permutated gene lists, 
-#'              we estimate the p-value assuming that the distribution of the ESs is Gaussian.
-#' @param permutated_vector ESs for the original gene list (1) and all permutated gene lists (2:n)
-#' @import mclust
-#' @return nm_pal: estimated p-value
-nm_pval=function(permutated_vector){
-  ts=permutated_vector[1]
-  tmp_m=Mclust(permutated_vector[2:length(permutated_vector)], parameter = T, modelNames = "V")
-  pval=0
-  for (i in 1:length(tmp_m$parameters$mean)){
-    tmp_prob=as.numeric(tmp_m$parameters$pro[i])
-    tmp_mean=as.numeric(tmp_m$parameters$mean[i])
-    tmp_sd=sqrt(as.numeric(tmp_m$parameters$variance$sigmasq[i]))
-    pval=pval+ tmp_prob* (1-pnorm(ts, tmp_mean, tmp_sd))
-  }
-  return(pval)
-}
-
 #' @title Gene Set Enrichment Analysis (GSEA) with a new permutation method -- implementation in R
 #' @description To improve computational efficiency, we devised a new permutation approach by swapping stats_vector. 
 #'              Here, the gene symbols/names are permutated without changing the ranking vector (stats_vector).
@@ -114,6 +95,7 @@ nm_pval=function(permutated_vector){
 #' @import qvalue 
 #' @export
 GSEA_proc_R = function(GSDB, DElist, minSize=5, nperm = 1000){
+  
   genes = names(DElist)
   n_lens = sapply(GSDB, function(x) length(intersect(x, genes)))
   ids = which(n_lens >= minSize)
@@ -123,13 +105,17 @@ GSEA_proc_R = function(GSDB, DElist, minSize=5, nperm = 1000){
   sim_all = append(list(names(DElist)), sim_glists)
   tmp_stats_vector = as.numeric(DElist)
   
+  n_DB = length(GSDB)
+  sim_rslt = matrix(0, nrow = n_DB , ncol = nperm + 1)
   for (i in 1:length(GSDB)){
-    tmp_sim_gseas = GSEA_permut_R(sim_all, GSDB[[i]], tmp_stats_vector)
+    sim_rslt[i,] = GSEA_permut_R(sim_all, GSDB[[i]], tmp_stats_vector)
   }
+  rownames(sim_rslt) = names(GSDB)
+  
   pvals = apply(sim_rslt, 1, function(x) sum(x[1] < x)/ nperm)
   z = apply(sim_rslt, 1, function(x) (x[1]-mean(x[2:nperm+1]))/sd(x[2:nperm+1]) )
-  rslt = data.frame(tf = rownames(sim_rslt), es = gsea_rslt,
-                    lens = lens[ids], pvals = pvals, z = z)
+  rslt = data.frame(tf = rownames(sim_rslt), es = sim_rslt[,1],
+                    lens = n_lens[ids], pvals = pvals, z = z)
   rslt = rslt[order(rslt$pvals, decreasing = F),]
   
   qvals = qvalue(rslt$pvals, lambda=0)$qvalues

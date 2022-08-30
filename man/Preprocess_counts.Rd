@@ -17,6 +17,6 @@ Preprocess_counts(counts, groups, mouse = FALSE)
 x$counts: processed count matrix
 }
 \description{
-NetAct uses edgeR to load the count data and the group information for experimental conditions,
-It also coverts gene symbols and remove duplicates.
+NetAct uses edgeR to load the count data and the group information for experimental conditions, 
+             It also coverts gene symbols and remove duplicates.
 }

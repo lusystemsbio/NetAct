@@ -19,12 +19,12 @@ TF_GSEA(GSDB, DErslt, minSize = 5, nperm = 1000, method = "binary")
 }
 \value{
 gseaRes: a table of GSEA results:
-tf: TF (gene set name).
-es: ES score.
-lens: number of overlapping genes in each gene set.
-pvals: p-value by counting.
-z: z-score.
-qvals: q-value from pvals.
+        tf: TF (gene set name).
+        es: ES score.
+        lens: number of overlapping genes in each gene set.
+        pvals: p-value by counting.
+        z: z-score.
+        qvals: q-value from pvals.
 }
 \description{
 A unified Gene Set Enrichment Analysis (GSEA) function for three methods

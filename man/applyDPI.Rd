@@ -10,19 +10,19 @@ applyDPI(tfLinks = tfLinks, miMat = miMat, miDiff = 0, minMiTh = 0.5)
 \item{tfLinks}{Data.frame. containing the interactions as source (character),
 target (character), type (integer).}
 
-\item{miMat}{numeric matrix. Interaction scores based on mutual information or
+\item{miMat}{numeric matrix. Interaction scores based on mutual information or 
 correlation.}
 
-\item{miDiff}{numeric (0-1). Default 0.0 (optional) Minimum difference
+\item{miDiff}{numeric (0-1). Default 0.0 (optional) Minimum difference 
 between mutual information of a traingle for the edge to be removed.}
 
-\item{minMiTh}{numeric (0-1). Default 0.5. Minimum value of MI for an interaction
+\item{minMiTh}{numeric (0-1). Default 0.5. Minimum value of MI for an interaction 
 which will not be removed.}
 }
 \value{
 data.frame. containing the filtered interactions.
 }
 \description{
-Remove the interactions from a triangle which have lowest
+Remove the interactions from a triangle which have lowest 
 interaction score.
 }

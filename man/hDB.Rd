@@ -12,7 +12,7 @@ hDB
 }
 \description{
 This data contains the literature-derived target genes of transcription factors
-for human genome. For further details,
+for human genome. For further details, 
 see the bioRxiv preprint https://doi.org/10.1101/2022.05.06.487898
 }
 \keyword{datasets}

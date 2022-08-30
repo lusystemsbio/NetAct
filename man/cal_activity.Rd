@@ -33,9 +33,9 @@ cal_activity(
 \item{useCorSign}{allow the option to use the TF gene expression correlation to flip signs (default: TRUE)}
 }
 \value{
-a list of results:
-activity: matrix of TF activity.
-sign: grouping scheme of all TF gene sets.
+a list of results: 
+        activity: matrix of TF activity.
+        sign: grouping scheme of all TF gene sets.
 }
 \description{
 The core function to compute the activity profile of an TF

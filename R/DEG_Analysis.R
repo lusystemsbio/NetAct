@@ -11,17 +11,15 @@
 #' @return x$counts: processed count matrix
 #' @export
 #' @import edgeR
-#' @import Mus.musculus
-#' @import Homo.sapiens
-#' @import biomaRt
+#' @import org.Mm.eg.db
+#' @import org.Hs.eg.db
+#' @import AnnotationDbi
 Preprocess_counts <- function(counts, groups, mouse = FALSE) {
 #  require(edgeR)
-   require(Mus.musculus)
-   require(Homo.sapiens)
 #  Create DGEList and Filter
   x <- DGEList(counts, group = groups)
-  
-  #  Gene Annotations and Filter Duplicate Symbols
+ 
+#  Gene Annotations and Filter Duplicate Symbols
   geneid <- rownames(counts)
   
   if(grepl("ENS", geneid[1])) {
@@ -31,20 +29,25 @@ Preprocess_counts <- function(counts, groups, mouse = FALSE) {
   }
   
   if (mouse == TRUE) {
-    genes <- biomaRt::select(Mus.musculus::Mus.musculus, keys = geneid, columns = c("SYMBOL", "TXCHROM"), keytype = keytype)
+    genes <- AnnotationDbi::select(org.Mm.eg.db, keys = geneid, columns = "SYMBOL", keytype = keytype)
   } else {
-    genes <- biomaRt::select(Homo.sapiens::Homo.sapiens, keys = geneid, columns = c("SYMBOL", "TXCHROM"), keytype = keytype)
+    genes <- AnnotationDbi::select(org.Hs.eg.db, keys = geneid, columns = "SYMBOL", keytype = keytype)
   }
   
-  genes <- genes[-which(duplicated(genes[keytype])),]
+  dup_id = which(duplicated(genes[keytype]))
+  if(length(dup_id) != 0){
+    genes = genes[-dup_id,]
+  }
+  
   filter_na <- which(is.na(genes$SYMBOL))
   filter_dup <- which(duplicated(genes$SYMBOL))
-  
   filter <- unique(filter_na, filter_dup)
-  x$counts <- x$counts[-filter, ]
-  rownames(x$counts) <- genes$SYMBOL[-filter]
+  if(length(filter) != 0){
+    x$counts <- x$counts[-filter, ]
+    rownames(x$counts) <- genes$SYMBOL[-filter]
+  }
   
-  #Filter Low Expression
+#Filter Low Expression
   keep.exprs <- filterByExpr(x, group=groups)
   x <- x[keep.exprs,, keep.lib.sizes=FALSE]
   
@@ -224,7 +227,7 @@ RNAseqDegs_limma = function(counts, phenodata, complist, lfc, qval = 0.05) {
     data.rm.batch = NULL
   }
   
-  if (missing(complist)) {
+  if (length(compList) == 1) {
     
     rslt = topTable(efit, coef=compList, number = Inf, sort.by = "P")
     rslt$padj = rslt$adj.P.Val
@@ -284,7 +287,7 @@ RNAseqDegs_DESeq = function(counts, phenodata, complist, qval = 0.05) {
 #  require(DESeq2)
   celltype = phenodata$celltype
   
-  if (missing(complist)) {
+  if (missing(complist) | length(complist) == 1) {
     
     if (is.null(phenodata$batch) | length(unique(phenodata$batch)) == 1){
       dds = DESeqDataSetFromMatrix(countData = counts, colData = phenodata, design = ~ celltype)

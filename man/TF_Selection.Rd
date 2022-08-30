@@ -34,13 +34,13 @@ GSEA is applied to each comparison}
 
 \item{ntop}{the number of top genes (selection by the top genes) (default: NULL, no selection by the top genes)}
 
-\item{nameFile}{file name to save the GSEA results (default: NULL, no output to a file).
+\item{nameFile}{file name to save the GSEA results (default: NULL, no output to a file). 
 The saved results can be reused later to adjust the TF selection parameters}
 }
 \value{
-a list of results:
-GSEArslt: a dataframe of GSEA results (see TF_GSEA).
-tfs: a vector of selected TFs.
+a list of results: 
+        GSEArslt: a dataframe of GSEA results (see TF_GSEA).
+        tfs: a vector of selected TFs.
 }
 \description{
 Identifying enriched TFs using Gene Set Enrichment Analysis (GSEA) -- a wrapper function with many options

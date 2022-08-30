@@ -1,4 +1,4 @@
-## NetAct ver 1.0.4
+## NetAct ver 1.0.5
 
 NetAct a computational platform for constructing core transcription-factor regulatory networks using both transcriptomics data and literature-based transcription factor-target databases. NetAct robustly infers the activities of regulators using target expression, constructs networks based on transcriptional activity, and integrates mathematical modeling for validation. 
 
