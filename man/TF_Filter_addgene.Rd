@@ -9,7 +9,7 @@ TF_Filter_addgene(
   GSDB,
   genes,
   DEgenes,
-  exp_data,
+  eset,
   miTh = 0.4,
   maxTf = 75,
   maxInteractions = 300,
@@ -30,7 +30,7 @@ TF_Filter_addgene(
 
 \item{DEgenes}{vector. a vector of gene symbols of DE genes}
 
-\item{exp_data}{matrix. gene expression data}
+\item{eset}{expression set of gene expression data or gene expression matrix}
 
 \item{miTh}{numeric. Mutual information threshold}
 

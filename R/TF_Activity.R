@@ -5,7 +5,7 @@
 #' Inference of TF activity
 #' @param tfs a vector of selected tfs
 #' @param GSDB gene set database (a list of gene sets, each of which is comprised of a vector genes)
-#' @param eset expression set of gene expression data
+#' @param eset expression set of gene expression data or gene expression matrix
 #' @param DErslt DEG results
 #' @param with_weight whether weighting factors (based on DEG p-values) are used to compute TF activity (default: TRUE)
 #' @param if_module whether the grouping scheme (activation or inhibition) depends on module detection algorithm (default: FALSE, no need to change)

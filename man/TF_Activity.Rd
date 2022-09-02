@@ -20,7 +20,7 @@ TF_Activity(
 
 \item{GSDB}{gene set database (a list of gene sets, each of which is comprised of a vector genes)}
 
-\item{eset}{expression set of gene expression data}
+\item{eset}{expression set of gene expression data or gene expression matrix}
 
 \item{DErslt}{DEG results}
 

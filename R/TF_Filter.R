@@ -222,7 +222,7 @@ getAdjacencyMat <- function(tfLinks = tfLinks){
 #' @param GSDB List of list. Gene set database of interactions
 #' @param genes vector. a vector of gene symbols of genes of interest
 #' @param DEgenes vector. a vector of gene symbols of DE genes 
-#' @param exp_data matrix. gene expression data
+#' @param eset expression set of gene expression data or gene expression matrix
 #' @param miTh numeric. Mutual information threshold 
 #' @param maxTf integer (optional). Default 75. Maximum number of transcription 
 #' factors in the network. If \code{removeSignalling} is \code{TRUE} 
@@ -245,13 +245,18 @@ getAdjacencyMat <- function(tfLinks = tfLinks){
 #'        tf_links: network interactions.
 #'        new_links: new interactions associated with the genes of interest.
 #' @export
-TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, exp_data, miTh = 0.4, maxTf = 75, 
+TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, eset, miTh = 0.4, maxTf = 75, 
                        maxInteractions = 300,  
                        nbins = 16, corMethod = "spearman", useCor = FALSE, 
                        removeSignalling = FALSE, DPI = FALSE, ...){
 # genes : the genes we want check 
 #  DE genes: diffentially expressed gene list(get from the function "MicroDegs")
 #  exp_data: the whole data set with all genes 
+  if (is(eset, "ExpressionSet")){
+    data = exprs(eset)
+  }else{
+    data = eset
+  }
   genelist=intersect(genes,DEgenes)
   genelist=setdiff(genelist,names(GSDB))
   
