@@ -17,25 +17,33 @@ allNet = function(GSDB){
 #' @description Mutual information between all pairs based on entropy package.
 #' @param actMat numeric matrix. 
 #' @param nbins integer (optional). Number of bins Default 16
+#' @param method MI calculation method: e: entropy (default) or i: infotheo
 #' @import entropy
+#' @import infotheo
 #' @return numeric matrix (0-1). Matrix containing mutual information values
-calculateMI <- function(actMat = actMat, nbins=16){
+calculateMI <- function(actMat = actMat, nbins=16, method = "e"){
   nGenes <- dim(actMat)[1]
   miMat <- matrix(0,nrow = nGenes,ncol = nGenes)
   geneNames <- rownames(actMat)
   rownames(miMat) <- geneNames
   colnames(miMat) <- geneNames
   
-  #i=1
-  for(i in 1:(nGenes-1))
-  {
-    for(j in (i+1):(nGenes))
+  if(method == "e"){
+    for(i in 1:(nGenes-1))
     {
-      temp <- discretize2d(actMat[i,],actMat[j,],nbins,nbins)
-      miMat[i, j] <- mi.shrink(temp,verbose = F)
-      miMat[j, i] <- miMat[i, j]
+      for(j in (i+1):(nGenes))
+      {
+        temp <- entropy::discretize2d(actMat[i,],actMat[j,],nbins,nbins)
+        miMat[i, j] <- entropy::mi.shrink(temp,verbose = F)
+        miMat[j, i] <- miMat[i, j]
+      }
     }
+  }else if(method == "i"){
+    miMat = infotheo::discretize(temp, disc="equalfreq", nbins = nbins)  
+    miMat = infotheo::mutinformation(miMat, method = "shrink") 
   }
+  
+  #i=1
   return(miMat)
 }
 
@@ -251,7 +259,7 @@ TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, eset, miTh = 0.4, ma
                        removeSignalling = FALSE, DPI = FALSE, ...){
 # genes : the genes we want check 
 #  DE genes: diffentially expressed gene list(get from the function "MicroDegs")
-#  exp_data: the whole data set with all genes 
+#  eset: the whole data set with all genes 
   if (is(eset, "ExpressionSet")){
     data = exprs(eset)
   }else{
@@ -272,7 +280,7 @@ TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, eset, miTh = 0.4, ma
     return(list(tf_links=tf_links2, new_links = NULL))
   }
   
-  k1=as.matrix(rbind(actMat,exp_data[genelist,]))
+  k1=as.matrix(rbind(actMat,data[genelist,]))
   tf_links = TF_Filter(actMat, GSDB, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, corMethod =corMethod, 
                         useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = NULL,...)
   tf_links2 = TF_Filter(k1, GSDB.n, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, corMethod =corMethod, 
