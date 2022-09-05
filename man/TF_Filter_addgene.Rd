@@ -14,6 +14,7 @@ TF_Filter_addgene(
   maxTf = 75,
   maxInteractions = 300,
   nbins = 16,
+  miMethod = "e",
   corMethod = "spearman",
   useCor = FALSE,
   removeSignalling = FALSE,
@@ -42,6 +43,8 @@ the actual number will be less.}
 interactions in the network.}
 
 \item{nbins}{integer (optional). Number of bins Default 16.}
+
+\item{miMethod}{MI calculation method: e: entropy (default) or i: infotheo}
 
 \item{corMethod}{character (optional). Method to compute correlation.}
 

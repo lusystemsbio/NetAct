@@ -11,6 +11,7 @@ TF_Filter(
   maxTf = 75,
   maxInteractions = 300,
   nbins = 16,
+  miMethod = "2d",
   corMethod = "spearman",
   useCor = FALSE,
   removeSignalling = FALSE,
@@ -34,6 +35,10 @@ the actual number will be less.}
 interactions in the network.}
 
 \item{nbins}{integer (optional). Number of bins Default 16.}
+
+\item{miMethod}{MI calculation method: 
+"2d": 2D discretization with entropy (default) 
+"1d": 1D discretization with infotheo}
 
 \item{corMethod}{character (optional). Method to compute correlation.}
 

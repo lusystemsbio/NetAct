@@ -17,18 +17,27 @@ allNet = function(GSDB){
 #' @description Mutual information between all pairs based on entropy package.
 #' @param actMat numeric matrix. 
 #' @param nbins integer (optional). Number of bins Default 16
-#' @param method MI calculation method: e: entropy (default) or i: infotheo
+#' @param method MI calculation method: 
+#'                "2d": 2D discretization with entropy (default) 
+#'                "1d": 1D discretization with infotheo
 #' @import entropy
 #' @import infotheo
 #' @return numeric matrix (0-1). Matrix containing mutual information values
-calculateMI <- function(actMat = actMat, nbins=16, method = "e"){
+calculateMI <- function(actMat = actMat, nbins=16, method = "2d"){
   nGenes <- dim(actMat)[1]
-  miMat <- matrix(0,nrow = nGenes,ncol = nGenes)
   geneNames <- rownames(actMat)
-  rownames(miMat) <- geneNames
-  colnames(miMat) <- geneNames
   
-  if(method == "e"){
+#  mat_cor = cor(t(actMat))
+  
+  if(method == "1d"){
+    temp = infotheo::discretize(t(actMat), disc="equalfreq", nbins = nbins)
+    miMat = infotheo::mutinformation(temp, method = "shrink") 
+    rownames(miMat) <- geneNames
+    colnames(miMat) <- geneNames
+  }else{   # "2d", default choice
+    miMat <- matrix(0,nrow = nGenes,ncol = nGenes)
+    rownames(miMat) <- geneNames
+    colnames(miMat) <- geneNames
     for(i in 1:(nGenes-1))
     {
       for(j in (i+1):(nGenes))
@@ -38,9 +47,6 @@ calculateMI <- function(actMat = actMat, nbins=16, method = "e"){
         miMat[j, i] <- miMat[i, j]
       }
     }
-  }else if(method == "i"){
-    miMat = infotheo::discretize(temp, disc="equalfreq", nbins = nbins)  
-    miMat = infotheo::mutinformation(miMat, method = "shrink") 
   }
   
   #i=1
@@ -62,6 +68,9 @@ calculateMI <- function(actMat = actMat, nbins=16, method = "e"){
 #' @param maxInteractions integer (optional). Default 300. Maximum number of
 #' interactions in the network.
 #' @param nbins integer (optional). Number of bins Default 16.
+#' @param miMethod MI calculation method: 
+#'                "2d": 2D discretization with entropy (default) 
+#'                "1d": 1D discretization with infotheo
 #' @param corMethod character (optional). Method to compute correlation.
 #' @param useCor Logical (optional). Whether to use correlation instead of
 #' mutual information to find possible interactions. 
@@ -78,8 +87,8 @@ calculateMI <- function(actMat = actMat, nbins=16, method = "e"){
 #' @import reshape2
 #' @export
 TF_Filter = function(actMat, GSDB, miTh = 0.4, maxTf = 75, 
-                     maxInteractions = 300,  
-                     nbins = 16, corMethod = "spearman", useCor = FALSE, 
+                     maxInteractions = 300, nbins = 16, miMethod = "2d",
+                     corMethod = "spearman", useCor = FALSE, 
                      removeSignalling = FALSE, DPI = FALSE, nameFile = NULL, ...){
   
   corMat = cor(t(actMat), method = corMethod)
@@ -88,7 +97,7 @@ TF_Filter = function(actMat, GSDB, miTh = 0.4, maxTf = 75,
     diag(miMat) <- 0
   }
   else{
-    miMat <- calculateMI(actMat, nbins)
+    miMat <- calculateMI(actMat, nbins, method = miMethod)
   }
   
   actLinks = reshape2::melt(miMat)
@@ -136,6 +145,11 @@ TF_Filter = function(actMat, GSDB, miTh = 0.4, maxTf = 75,
   if (!is.null(nameFile)) {
     write.csv(tfLinks, file = paste0(nameFile, ".csv" ))
     saveRDS(tfLinks, file = paste0(nameFile, ".tpo" ))
+  }
+   
+  if(nrow(tfLinks) == maxInteractions){
+    print("Maximum number of interactions is reached!")
+    
   }
   return(tfLinks)
 }
@@ -238,6 +252,7 @@ getAdjacencyMat <- function(tfLinks = tfLinks){
 #' @param maxInteractions integer (optional). Default 300. Maximum number of
 #' interactions in the network.
 #' @param nbins integer (optional). Number of bins Default 16.
+#' @param miMethod MI calculation method: e: entropy (default) or i: infotheo
 #' @param corMethod character (optional). Method to compute correlation.
 #' @param useCor Logical (optional). Whether to use correlation instead of
 #' mutual information to find possible interactions. Default FALSE 
@@ -254,9 +269,10 @@ getAdjacencyMat <- function(tfLinks = tfLinks){
 #'        new_links: new interactions associated with the genes of interest.
 #' @export
 TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, eset, miTh = 0.4, maxTf = 75, 
-                       maxInteractions = 300,  
-                       nbins = 16, corMethod = "spearman", useCor = FALSE, 
+                       maxInteractions = 300, nbins = 16, miMethod = "e",
+                       corMethod = "spearman", useCor = FALSE, 
                        removeSignalling = FALSE, DPI = FALSE, ...){
+    
 # genes : the genes we want check 
 #  DE genes: diffentially expressed gene list(get from the function "MicroDegs")
 #  eset: the whole data set with all genes 
@@ -281,10 +297,10 @@ TF_Filter_addgene <- function(actMat, GSDB, genes, DEgenes, eset, miTh = 0.4, ma
   }
   
   k1=as.matrix(rbind(actMat,data[genelist,]))
-  tf_links = TF_Filter(actMat, GSDB, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, corMethod =corMethod, 
-                        useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = NULL,...)
-  tf_links2 = TF_Filter(k1, GSDB.n, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, corMethod =corMethod, 
-                        useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = NULL,...)
+  tf_links = TF_Filter(actMat, GSDB, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, miMethod = miMethod, 
+                       corMethod =corMethod, useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = NULL,...)
+  tf_links2 = TF_Filter(k1, GSDB.n, miTh =miTh, maxTf =maxTf, maxInteractions=maxInteractions, nbins =nbins, miMethod = miMethod,
+                       corMethod =corMethod, useCor=useCor,removeSignalling=removeSignalling,  DPI = DPI, nameFile = NULL,...)
   new=setdiff(tf_links2[,2],tf_links[,2])
   tf_link_new=tf_links2[tf_links2[,2]%in%new,]
   return(list(tf_links=tf_links2,new_links=tf_link_new))

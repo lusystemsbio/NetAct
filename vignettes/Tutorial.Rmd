@@ -115,7 +115,7 @@ In this step we output the gene regulatory network topology by filtering the lin
 
 ```{r }
 tf_links = TF_Filter(acts_mat, mDB, miTh = .05, nbins = 8, corMethod = "spearman", DPI = T)
-#plot_network(tf_links)
+plot_network(tf_links)
 ```
 <center> ![](tutorial_network.png){width=60%} </center>
 

@@ -4,14 +4,16 @@
 \alias{calculateMI}
 \title{Calculate mutual information}
 \usage{
-calculateMI(actMat = actMat, nbins = 16, method = "e")
+calculateMI(actMat = actMat, nbins = 16, method = "2d")
 }
 \arguments{
 \item{actMat}{numeric matrix.}
 
 \item{nbins}{integer (optional). Number of bins Default 16}
 
-\item{method}{MI calculation method: e: entropy (default) or i: infotheo}
+\item{method}{MI calculation method: 
+"2d": 2D discretization with entropy (default) 
+"1d": 1D discretization with infotheo}
 }
 \value{
 numeric matrix (0-1). Matrix containing mutual information values
