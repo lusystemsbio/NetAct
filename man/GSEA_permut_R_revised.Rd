@@ -11,7 +11,8 @@ GSEA_permut_R_revised(sim_all, gene_set, stats_vector, N)
 
 \item{gene_set}{a vector of genes in the gene set}
 
-\item{stats_vector}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
+\item{stats_vector}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results);
+Absolute values of the t-statistics are required for the desired performance.}
 
 \item{N}{total number of genes (size of sim_all)}
 }

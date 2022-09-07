@@ -11,11 +11,15 @@ GSEA_score(gene_list, gene_set, stats_vector)
 
 \item{gene_set}{a vector of genes in the gene set}
 
-\item{stats_vector}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
+\item{stats_vector}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+Absolute values of the t-statistics are required for the desired performance.}
 }
 \value{
 ES: enrichment score
 }
 \description{
-Compute the enrichment score (ES) from Gene Set Enrichment Analysis
+In this specific implementation, we modified two aspects:
+       (1) the stats_vector takes the absolute value of the t-statistics; 
+       This ensures that the GSEA works for the case where part of genes are up-regulated and others are down-regulated.
+       (2) permutation of the gene symbols of the ranking vector, instead of gene expression values.
 }

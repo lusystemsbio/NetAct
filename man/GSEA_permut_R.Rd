@@ -11,7 +11,8 @@ GSEA_permut_R(sim_all, gs, stats_vector)
 
 \item{gs}{a vector of genes in the gene set}
 
-\item{stats_vector}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)}
+\item{stats_vector}{a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+Absolute values of the t-statistics are required for the desired performance.}
 }
 \value{
 tmp_sim_sgeas: a vector of ES values for all permutated gene lists

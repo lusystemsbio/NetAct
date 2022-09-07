@@ -2,10 +2,15 @@
 ############# TF GSEA and Selection Function #############
 ##########################################################
 
-#' Compute the enrichment score (ES) from Gene Set Enrichment Analysis
+#' @title Compute the enrichment score (ES) from Gene Set Enrichment Analysis
+#' @description In this specific implementation, we modified two aspects:
+#'        (1) the stats_vector takes the absolute value of the t-statistics; 
+#'        This ensures that the GSEA works for the case where part of genes are up-regulated and others are down-regulated.
+#'        (2) permutation of the gene symbols of the ranking vector, instead of gene expression values.
 #' @param gene_list a vector of genes in the expression data
 #' @param gene_set a vector of genes in the gene set
 #' @param stats_vector a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#'                     Absolute values of the t-statistics are required for the desired performance.
 #' @return ES: enrichment score
 #' @export
 GSEA_score = function(gene_list, gene_set, stats_vector){
@@ -41,7 +46,8 @@ GSEA_score = function(gene_list, gene_set, stats_vector){
 #'              This function becomes unused in NetAct, as a much faster c++ implementation (GSEA_permute) is provided.
 #' @param sim_all a vector of genes in the expression data
 #' @param gene_set a vector of genes in the gene set
-#' @param stats_vector a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#' @param stats_vector a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results);
+#'                     Absolute values of the t-statistics are required for the desired performance.
 #' @param N total number of genes (size of sim_all)
 #' @return ES: enrichment score
 GSEA_permut_R_revised = function(sim_all, gene_set, stats_vector, N){
@@ -72,6 +78,7 @@ GSEA_permut_R_revised = function(sim_all, gene_set, stats_vector, N){
 #' @param sim_all a matrix of permutated gene lists
 #' @param gs a vector of genes in the gene set
 #' @param stats_vector a vector of DEG statistics for every gene in gene_list (rank_vector in the DEG results)
+#'                     Absolute values of the t-statistics are required for the desired performance.
 #' @return tmp_sim_sgeas: a vector of ES values for all permutated gene lists
 GSEA_permut_R = function(sim_all, gs, stats_vector){
   tmp_sim_gseas = unlist(lapply(sim_all, function(x) GSEA_score(x, gs, stats_vector)))
