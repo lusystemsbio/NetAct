@@ -45,11 +45,11 @@ Activity_heatmap = function(new_activity, eset){
     if (is(eset, "ExpressionSet")){
         data = exprs(eset)
     }else{data = eset}
-    H1 = Heatmap(row_norm(new_activity), col = colorRamp2(c(-2, 0, 2), c("green3", "white", "red")),
+    H1 = Heatmap(row_norm(new_activity), col = colorRamp2(c(-2, 0, 2), c("blue3", "white", "red")),
                  cluster_columns = T, cluster_rows = T, show_row_dend = FALSE, name = "Activity", column_title = "Activity")
     gs = rownames(new_activity)
     gc = colnames(new_activity)
-    H2 = Heatmap(row_norm(data[gs, gc]), col = colorRamp2(c(-2, 0, 2), c("green3", "white", "red")),
+    H2 = Heatmap(row_norm(data[gs, gc]), col = colorRamp2(c(-2, 0, 2), c("blue3", "white", "red")),
                  cluster_columns = T, cluster_rows = T, show_row_dend = FALSE,name = "Expression", column_title = "Expression")
     H1 + H2
 }
