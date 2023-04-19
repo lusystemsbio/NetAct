@@ -301,7 +301,9 @@ RNAseqDegs_DESeq = function(counts, phenodata, complist, qval = 0.05) {
     
     dds = DESeq(dds)
     DEtable = results(dds, alpha = qval)
-    DEtable =  data.frame(DEtable[complete.cases(DEtable), ])
+    DEtable = data.frame(DEtable)
+    DEtable = DEtable[complete.cases(DEtable),]
+#    DEtable =  data.frame(DEtable[complete.cases(DEtable), ])
     DEtable = DEtable[order(DEtable$pvalue), ]
     rank_vector = abs(DEtable$stat); names(rank_vector) = rownames(DEtable)
     degs = rownames(DEtable[DEtable$padj < qval, ])
@@ -327,7 +329,9 @@ RNAseqDegs_DESeq = function(counts, phenodata, complist, qval = 0.05) {
       
       dds = DESeq(dds)
       DEtable = results(dds, alpha = qval)
-      DEtable =  data.frame(DEtable[complete.cases(DEtable), ])
+      DEtable = data.frame(DEtable)
+      DEtable = DEtable[complete.cases(DEtable),]
+      #DEtable =  data.frame(DEtable[complete.cases(DEtable), ])
       DEtable = DEtable[order(DEtable$pvalue), ]
       rank_vector = abs(DEtable$stat); names(rank_vector) = rownames(DEtable)
       degs = rownames(DEtable[DEtable$padj < qval, ])
@@ -351,7 +355,9 @@ RNAseqDegs_DESeq = function(counts, phenodata, complist, qval = 0.05) {
     #DESeq
     dds = DESeq(dds, test = "LRT", reduced = ~ 1)
     DEtable = results(dds, alpha = qval)
-    DEtable =  data.frame(DEtable[complete.cases(DEtable), ])
+    DEtable = data.frame(DEtable)
+    DEtable = DEtable[complete.cases(DEtable),]
+#    DEtable =  data.frame(DEtable[complete.cases(DEtable), ])
     DEtable = DEtable[order(DEtable$pvalue), ]
     rank_vector = abs(DEtable$stat); names(rank_vector) = rownames(DEtable)
     degs = rownames(DEtable[DEtable$padj < qval, ])

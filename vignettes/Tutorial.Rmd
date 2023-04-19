@@ -70,7 +70,16 @@ Fro RNA-seq data, NetAct provides a useful pre-processing function called ```pre
 counts <- Preprocess_counts(counts = x$counts, groups = group, mouse = TRUE)
 DErslt = RNAseqDegs_limma(counts = counts, phenodata = phenoData, 
                           complist = compList, qval = 0.05)
+
 neweset = Biobase::ExpressionSet(assayData = as.matrix(DErslt$Overall$e), phenoData = phenoData)
+```
+
+Alternatively, the users can choose to use DESeq2 for the DEG analysis.
+
+```{r}
+DErslt2 = RNAseqDegs_DESeq(counts = counts, phenodata = phenoData, 
+                          complist = compList, qval = 0.05)
+neweset2 = Biobase::ExpressionSet(assayData = as.matrix(DErslt2$Overall$e), phenoData = phenoData)
 ```
 
 # Identify significantly enriched TFs
@@ -129,7 +138,7 @@ racipe_results <- sRACIPE::sracipeSimulate(circuit = tf_links, numModels = 200, 
 
 # References
 
-Su K, et al (2022) NetAct: a computational platform to construct core transcription factor regulatory networks using gene activity, bioRxiv 2022.05.06.487898; doi: https://doi.org/10.1101/2022.05.06.487898
+Su K, et al (2022) NetAct: a computational platform to construct core transcription factor regulatory networks using gene activity, Genome Biology, 23:270. https://doi.org/10.1186/s13059-022-02835-3
 
 # Session Information
 
